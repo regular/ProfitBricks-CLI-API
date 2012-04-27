@@ -80,7 +80,7 @@ class Formatter:
 		i = 1
 		for dataCenter in dataCenters:
 			dc = self.requireArgs(dataCenter, ["dataCenterName", "dataCenterId", "dataCenterVersion"]);
-			self.out("%s %s %s %s", str(i), dc["dataCenterName"].ljust(38), dc["dataCenterId"].ljust(36), dc["dataCenterVersion"].ljust(4))
+			self.out("%s %s %s %s", str(i).rjust(3), dc["dataCenterName"].ljust(38), dc["dataCenterId"].ljust(36), dc["dataCenterVersion"].ljust(4))
 			i += 1
 	
 	def printNIC(self, apiNIC):
