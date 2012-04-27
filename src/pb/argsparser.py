@@ -71,6 +71,7 @@ class ArgsParser:
 			for requiredArg in ArgsParser.operations[op]["args"]:
 				if not requiredArg in self.opArgs:
 					errorhandler.ArgsError("operation '%s' requires these arguments: -%s" % (self.baseArgs["op"], " -".join(ArgsParser.operations[op]["args"])))
+					return op
 			return op
 		return None
 	

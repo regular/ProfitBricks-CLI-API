@@ -75,11 +75,13 @@ class Formatter:
 	def printAllDataCenters(self, dataCenters):
 		if not self.short:
 			self.out()
-		self.out("%s %s %s", "Name".ljust(38), "Data Center ID".ljust(36), "Ver".ljust(4))
-		self.out("%s %s %s", "-" * 38, "-" * 36, "-" * 4)
+		self.out("%s %s %s %s", "ID".ljust(3),  "Name".ljust(35), "Data Center ID".ljust(36), "Ver".ljust(4))
+		self.out("%s %s %s %s", "-" * 3, "-" * 35, "-" * 36, "-" * 4)
+		i = 1
 		for dataCenter in dataCenters:
 			dc = self.requireArgs(dataCenter, ["dataCenterName", "dataCenterId", "dataCenterVersion"]);
-			self.out("%s %s %s", dc["dataCenterName"].ljust(38), dc["dataCenterId"].ljust(36), dc["dataCenterVersion"].ljust(4))
+			self.out("%s %s %s %s", str(i), dc["dataCenterName"].ljust(38), dc["dataCenterId"].ljust(36), dc["dataCenterVersion"].ljust(4))
+			i += 1
 	
 	def printNIC(self, apiNIC):
 		nic = self.requireArgs(apiNIC, ["nicName", "nicId", "lanId", "macAddress", "serverId"])

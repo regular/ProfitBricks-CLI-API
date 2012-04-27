@@ -87,8 +87,8 @@ Enable short output formatting (display less information).
 .It Images: setImageOsType getImage getAllImages deleteImage
 .It NICs: createNic getNic setInternetAccess updateNic deleteNic
 .It IPs: reservePubilcIpBlock addPublicIpToNic getAllPublicIpBlocks removePublicIpFromNic releasePublicIpBlock
-.It Load balancers: ... TO DO ...
-.It Firewalls: ... TO DO ...
+.It Load balancers: createLoadBalancer getLoadBalancer updateLoadBalancer registerServersOnLoadBalancer deregisterServersOnLoadBalancer activateLoadBalancingOnServers deactivateLoadBalancingOnServers deleteLoadBalancer
+.It Firewalls: addFirewallRulesToNic addFirewallRulesToLoadBalancer getFirewall activateFirewalls deactivateFirewalls removeFirewallRules deleteFirewalls
 .El
 .\" DATACENTER OPERATIONS AND ARGUMENTS
 .Sh DATACENTER OPERATIONS AND ARGUMENTS
@@ -469,18 +469,83 @@ Releases an existing block of reserved public IPs. Before releasing an IP block,
 Identifier of the target reserved IP block.
 .El
 .El
+.\" LOAD BALANCERS OPERATIONS
+.Sh LOAD BALANCERS OPERATIONS
+.Nm
+.Fl u Ar username Fl p Ar password Fl dcid Ar dataCenterId Ar operation Op ...
+.Pp
+The
+.Ar operation
+may be:
+.Bl -tag -width Ds
+.It Ar createLoadBalancer
+Creates a virtual load balancer within an existing data center.
+.Bl -tag -width Ds
+.It Op Fl name Ar loadBalancerName
+Names the load balancer to be created.
+.It Op Fl algo Ar loadBalancerAlgorithm
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.1).
+.It Op Fl ip Ar ip
+A DHCP IP address is being assigned to the load balancer automatically by ProfitBricks. A private IP can be simply defined by the user. Additional, public IPs can be reserved and assigned to the load balancer manually. (see reservePublicIpBlock)
+.It Op Fl srvId Ar serverIds
+List of server ids, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
+.El
+.It Ar getLoadBalancer
+Returns information about a virtual load balancer.
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of the load balancer.
+.El
+.It Ar updateLoadBalancer
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of the load balancer.
+.It Op Fl name Ar loadBalancerName
+Renames the virtual load balancer.
+.It Op Fl algo Ar loadBalancerAlgorithm
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.1).
+.It Op Fl ip Ar ip
+Updates the load balancer with the specified IP. All servers connected to the load balancer will have their primary IP address updated with the same IP address of the load balancer implicitly. Additional customer reserved IP addresses, which have been added to the server's NIC, remain unchanged. Leave empty to reset the IP of the load balancer with a ProfitBricks assigned IP address.
+.El
+.It Ar registerServersOnLoadBalancer
+Add new servers to an existing load balancer within the respective LAN. If the server is not yet a member of the LAN, a new NIC is created, connected to the LAN and registered with the load balancer. The load balancer will distribute traffic to the server through this balanced NIC. If the server is already a member of the LAN, the appropriate NIC is used as balanced NIC. A server can be registered to more than one load balancer.
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of target load balancer.
+.It Fl srvid Ar serverId,serverId
+Identifiers of servers to be registered with target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
+.El
+.It Ar deregisterServersOnLoadBalancer
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of target load balancer.
+.It Fl srvid Ar serverId,serverId
+Identifiers of servers to be deregistered from target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
+.El
+.It Ar activateLoadBalancingOnServers
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of target load balancer.
+.It Fl srvid Ar serverId,serverId
+Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
+.El
+.It Ar deactivateLoadBalancingOnServers
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of target load balancer.
+.It Fl srvid Ar serverId,serverId
+Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
+.El
+.It Ar deleteLoadBalancer
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of target load balancer.
+.El
+.El
 .\" EXIT STATUS
 .Sh EXIT STATUS
 .Ex -std
-.\" DIAGNOSTICS
-.Sh DIAGNOSTICS
-(should give an overview of the most common error messages from your program and how to cope with them. There is no need to explain system error error messages (from perror(3)) or fatal signals (from psignal(3)) as they can appear during execution of any program.)
-.\" TO DO
-.Sh TO DO
-.Bl -tag -width Ds
-.It Load balancers
-.It Firewalls
-.El
 .\" AUTHOR
 .Sh AUTHOR
 Report bugs to <bugs at profitbricks dot com>
+Contact us at <support at profitbricks dot com>
