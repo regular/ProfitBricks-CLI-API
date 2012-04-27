@@ -75,7 +75,7 @@ class Formatter:
 	def printAllDataCenters(self, dataCenters):
 		if not self.short:
 			self.out()
-		self.out("%s %s %s %s", "ID".ljust(3),  "Name".ljust(35), "Data Center ID".ljust(36), "Ver".ljust(4))
+		self.out("%s %s %s %s", "Nr".ljust(3),  "Name".ljust(35), "Data Center ID".ljust(36), "Ver".ljust(4))
 		self.out("%s %s %s %s", "-" * 3, "-" * 35, "-" * 36, "-" * 4)
 		i = 1
 		for dataCenter in dataCenters:
