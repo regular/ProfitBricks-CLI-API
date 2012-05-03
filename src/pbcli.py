@@ -152,11 +152,17 @@ class Shell:
 		if len(args) == 0:
 			self.default_dc = None
 			return
-		if args[0].isdigit():
-			if int(args[0]) <= len(pb.api.API.datacenters) and int(args[0]) >= 1:
-				self.default_dc = str(pb.api.API.datacenters[int(args[0]) - 1].dataCenterId) # we count from 1, array is from 0
-			else:
-				self.default_dc = args[0] if len(args) > 0 else None
+		if args[0].isdigit() and int(args[0]) <= len(pb.api.API.datacenters) and int(args[0]) >= 1:
+			self.default_dc = str(pb.api.API.datacenters[int(args[0]) - 1].dataCenterId) # we count from 1, array is from 0
+		else:
+			self.default_dc = args[0] if len(args) > 0 else None
+		found = False
+		for dc in pb.api.API.datacenters:
+			if self.default_dc == dc.dataCenterId:
+				found = True
+		if not found:
+			self.default_dc = None
+		print "Default datacenter:", (self.default_dc if self.default_dc is not None else "none")
 
 	def do_exit(self):
 		self.out('Bye!')
