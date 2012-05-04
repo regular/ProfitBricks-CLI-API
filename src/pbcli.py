@@ -163,6 +163,8 @@ class Shell:
 		if not found:
 			self.default_dc = None
 		print "Default datacenter:", (self.default_dc if self.default_dc is not None else "none")
+		if self.default_dc is not None:
+			self.parse('get-datacenter -s');
 
 	def do_exit(self):
 		self.out('Bye!')
