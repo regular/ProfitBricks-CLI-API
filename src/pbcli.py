@@ -89,6 +89,10 @@ class Shell:
 					return
 				args.insert(0, 'dummy') # equivalent of argv[0]
 				argsParser = pb.argsparser.ArgsParser()
+				pb.errorhandler.initializing += 1
+				argsParser.readUserArgs(sys.argv)
+				pb.errorhandler.last_error()
+				pb.errorhandler.initializing -= 1
 				argsParser.readUserArgs(args)
 				requestedOp = argsParser.getRequestedOperation()
 				if requestedOp[0] == '@':
@@ -119,7 +123,7 @@ class Shell:
 				return
 
 	def default_dc_state(self, api):
-		return api.getDataCenterState(self.default_dc);
+		return api.getDataCenterState(self.default_dc)
 
 	def start(self):
 		readline.set_completer(self.completer())
@@ -127,6 +131,7 @@ class Shell:
 		readline.set_completer_delims(readline.get_completer_delims().replace('-', ''))
 		self.do_about()
 		self.out('')
+		self.parse('get-all-datacenters')
 		while True:
 			try:
 				text = raw_input(self.prompt())
@@ -164,7 +169,7 @@ class Shell:
 			self.default_dc = None
 		print "Default datacenter:", (self.default_dc if self.default_dc is not None else "none")
 		if self.default_dc is not None:
-			self.parse('get-datacenter -s');
+			self.parse('get-datacenter -s')
 
 	def do_exit(self):
 		self.out('Bye!')
