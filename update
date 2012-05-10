@@ -9,6 +9,7 @@ if [ -d "$(dirname $(readlink -f $0))/.git" ]; then
 	&& (
 		git pull | grep 'Already up-to-date.'
 		exit_code=$?
+		echo "Exit code: $exit_code"
 		[ "$exit_code" -ne "0" ] && ( echo "* WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!" )
 	)
 else
