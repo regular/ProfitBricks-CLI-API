@@ -1,19 +1,27 @@
 #!/bin/bash
 
+#
+# ProfitBricks API CLI auto-updater
+#
+# (C)2012, ProfitBricks GmbH
+# support@profitbricks.com
+#
+# This program is launched by src/pbcli.py, you can launch it yourself if you want
+#
+
 echo -n "Checking for updates: "
 exit_code=0
 
 if [ -d "$(dirname $(readlink -f $0))/.git" ]; then
 	( which git >/dev/null ) \
-	|| ( echo "Nothing to do (git not found)" ) \
+	|| ( echo 'Nothing to do (git not found)' ) \
 	&& (
-		git pull | grep 'Already up-to-date.'
-		exit_code=$?
-		echo "Exit code: $exit_code"
-		[ "$exit_code" -ne "0" ] && ( echo "* WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!" )
+		git pull | grep 'Unpacking objects'
+		exit_code=$( if [ "$?" -eq "0" ]; then echo 1; else echo 0; fi ) # exit_code = 0 if nothing happened, exit_code = 1 if we updated
+		[ "$exit_code" -eq "0" ] && ( echo '# WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!' )
 	)
 else
-	echo "Local git repository not found"
+	echo 'Local git repository not found'
 fi
 
 exit $exit_code
