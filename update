@@ -1,5 +1,6 @@
 #!/bin/bash
 
-echo -n "Attempting to update the ProfitBricks API CLI: "
-exit `( git pull | grep 'Already up-to-date.' ; echo $? ) | tail -n 1`
+echo -n "Checking for updates: "
+git pull | grep 'Already up-to-date.'
+exit $?
 
