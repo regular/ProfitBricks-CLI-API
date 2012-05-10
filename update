@@ -2,14 +2,16 @@
 
 echo -n "Checking for updates: "
 exit_code=0
-[ -d "$(dirname $(readlink -f $0))/.git" ] && ( which git >/dev/null ) && (
-	git pull | grep 'Already up-to-date.'
-	exit_code=$?
-	[ "$exit_code" eq "0" ] && ( echo "* WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!" )
-	exit $exit_code
-) || (
-	echo "Nothing to do (git not found)"
-)
+
+if [ -d "$(dirname $(readlink -f $0))/.git" ]; then
+	( which git >/dev/null )
+	|| ( echo "Nothing to do (git not found)" )
+	&& (
+		git pull | grep 'Already up-to-date.'
+		exit_code=$?
+		[ "$exit_code" eq "0" ] && ( echo "* WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!" )
+	)
+fi
 
 exit $exit_code
 
