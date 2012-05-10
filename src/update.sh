@@ -26,6 +26,7 @@ if [ "$git_dir" != "" ]; then # we have a ".git" directory
 		git pull | grep 'files changed' | grep 'insertions' | grep 'deletions'
 		if [ "$?" -eq "0" ]; then
 			exit_code=1
+			rm -rf "test" >/dev/null
 			echo -e "\n# WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!\n"
 		else
 			echo "Already up-to-date."
