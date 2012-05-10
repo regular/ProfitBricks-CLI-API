@@ -198,7 +198,6 @@ def restart_program(msg = None):
 
 if platform.system() == 'Linux' and os.path.isfile('../update'):
 	exit_code = os.system('../update')
-	print "Exit code:", exit_code
 	if exit_code > 0:
 		restart_program('The API has been updated and the application will now restart.')
 
