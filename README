@@ -5,6 +5,9 @@ Version 1.0 released Apr 27th 2012
 == ProfitBricks API Command-Line Interface ==
 =============================================
 
+Git source: git://github.com/profitbricks/ProfitBricks-CLI-API.git
+Source code: https://github.com/profitbricks/ProfitBricks-CLI-API/zipball/master
+
 1. PREREQUISITES FOR LINUX
 ==========================
 
@@ -42,6 +45,12 @@ becomes available again.
 
 5. SUPPORT
 ==========
+
+The application will automatically update its self on Unix or Linux systems if a
+git revision control application is installed. If an update is found, the system
+will update from the repository and will restart the pbcli.py application. There
+is no auto-update for pbapi.py, but you can always run ./update yourself. On the
+other platforms (Windows) you need to update from git yourself.
 
 Report bugs to bugs at profitbricks dot com
 Request support using support at profitbricks dot com
