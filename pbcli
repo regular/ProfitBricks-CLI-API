@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# If we have a default.auth file, use it to create $auth_args
+auth_args=''
+if [ -f "$(pwd)/default.auth" ]; then
+	auth_args="-auth $(pwd)/default.auth"
+elif [ -f "$(dirname $(readlink -f $0))/default.auth" ]; then
+	auth_args="-auth $(dirname $(readlink -f $0))/default.auth"
+elif [ -f "$(dirname $(readlink -f $0))/src/default.auth" ]; then
+	auth_args="-auth $(dirname $(readlink -f $0))/src/default.auth"
+fi
+
+# Get other default args from command line
+my_args="$*"
+
+# Launch src/pbcli.py
+cd src
+./pbcli.py "$auth_args $my_args"
+cd ..
+
