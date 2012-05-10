@@ -76,6 +76,19 @@ This is so the user doesn't have to keep providing authentication every time
 is used.
 .It Fl s
 Enable short output formatting (display less information).
+.It Fl f Ar field1,field2,field3
+Not implemented yet. Comma separated list of fields of the API response object to display as output. They will be separated by a newline character (\\n). Example:
+.Nm
+.Ar getAllDatacenters
+.Fl f
+.Ar name,id .
+This is useful for scripting, so you don't need to use
+.Ar sed
+and
+.Ar awk
+when extracting information from
+.Ar pbapi.py
+if you create your own scripts.
 .El
 .\" OVERVIEW
 .Sh OVERVIEW
@@ -88,13 +101,19 @@ Enable short output formatting (display less information).
 .It NICs: createNic getNic setInternetAccess updateNic deleteNic
 .It IPs: reservePubilcIpBlock addPublicIpToNic getAllPublicIpBlocks removePublicIpFromNic releasePublicIpBlock
 .It Load balancers: createLoadBalancer getLoadBalancer updateLoadBalancer registerServersOnLoadBalancer deregisterServersOnLoadBalancer activateLoadBalancingOnServers deactivateLoadBalancingOnServers deleteLoadBalancer
-.It Firewalls: addFirewallRulesToNic addFirewallRulesToLoadBalancer getFirewall activateFirewalls deactivateFirewalls removeFirewallRules deleteFirewalls
+.\".It Firewalls: addFirewallRulesToNic addFirewallRulesToLoadBalancer getFirewall activateFirewalls deactivateFirewalls removeFirewallRules deleteFirewalls
 .El
 .\" DATACENTER OPERATIONS AND ARGUMENTS
 .Sh DATACENTER OPERATIONS AND ARGUMENTS
 .Nm
 .Fl u Ar username Fl p Ar password Ar operation Fl dcid Ar dataCenterId Op ...
 .Pp
+The
+.Fl dcid Ar dataCenterId
+argument is mandatory for all operations except
+.Ar createDataCenter
+and
+.Ar getAllDataCenters .
 The
 .Ar operation
 may be:
@@ -152,6 +171,8 @@ Deletes an empty Virtual Data Center. All components must be removed first.
 .Fl u Ar username Fl p Ar password Ar operation Fl srvid Ar serverId Op ...
 .Pp
 The
+.Fl srvid Ar serverId
+argument is mandatory for all operations except createServer. The
 .Ar operation
 may be:
 .Bl -tag -width Ds
@@ -243,6 +264,8 @@ Deletes an existing virtual server.
 .Fl u Ar username Fl p Ar password Ar operation Fl stoid Ar storageId Op ...
 .Pp
 The
+.Fl stoid Ar storageId
+argument is mandatory for all operations except createStorage. The
 .Ar operation
 may be:
 .Bl -tag -width Ds
@@ -314,6 +337,11 @@ Deletes an existing virtual storage device.
 .Nm
 .Fl u Ar username Fl p Ar password Ar operation Fl imgid Ar imageId Fl srvid Ar serverId Op ...
 .Pp
+The
+.Fl imgid Ar imageId
+and
+.Fl srvid Ar serverId
+arguments are mandatory for all operations.
 .Bl -tag -width Ds
 .It Fl imageid Ar imageId
 Identifier of the CD/DVD-ROM image.
@@ -339,6 +367,10 @@ Removes a CD/DVD-ROM drive from an existing virtual server.
 .Nm
 .Fl u Ar username Fl p Ar password Ar operation Op ...
 .Pp
+The
+.Fl imgid Ar imageId
+argument is mandatory for all operations except
+.Ar getAllImages
 The
 .Ar operation
 may be:
@@ -472,8 +504,17 @@ Identifier of the target reserved IP block.
 .\" LOAD BALANCERS OPERATIONS
 .Sh LOAD BALANCERS OPERATIONS
 .Nm
-.Fl u Ar username Fl p Ar password Fl dcid Ar dataCenterId Ar operation Op ...
+.Fl u Ar username Fl p Ar password Fl bid Ar loadBalancerId Ar operation Op ...
 .Pp
+The
+.Fl bid Ar loadBalancerId
+argument is mandatory for all operations except
+.Ar
+createLoadBalancer .
+.Bl -tag -width Ds
+.It Fl bid Ar loadBalancerId
+Identifier of the load balancer.
+.El
 The
 .Ar operation
 may be:
@@ -492,10 +533,6 @@ List of server ids, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000
 .El
 .It Ar getLoadBalancer
 Returns information about a virtual load balancer.
-.Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of the load balancer.
-.El
 .It Ar updateLoadBalancer
 .Bl -tag -width Ds
 .It Fl bid Ar loadBalancerId
@@ -510,37 +547,25 @@ Updates the load balancer with the specified IP. All servers connected to the lo
 .It Ar registerServersOnLoadBalancer
 Add new servers to an existing load balancer within the respective LAN. If the server is not yet a member of the LAN, a new NIC is created, connected to the LAN and registered with the load balancer. The load balancer will distribute traffic to the server through this balanced NIC. If the server is already a member of the LAN, the appropriate NIC is used as balanced NIC. A server can be registered to more than one load balancer.
 .Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of target load balancer.
 .It Fl srvid Ar serverId,serverId
 Identifiers of servers to be registered with target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
 .It Ar deregisterServersOnLoadBalancer
 .Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of target load balancer.
 .It Fl srvid Ar serverId,serverId
 Identifiers of servers to be deregistered from target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
 .It Ar activateLoadBalancingOnServers
 .Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of target load balancer.
 .It Fl srvid Ar serverId,serverId
 Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
 .It Ar deactivateLoadBalancingOnServers
 .Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of target load balancer.
 .It Fl srvid Ar serverId,serverId
 Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
 .It Ar deleteLoadBalancer
-.Bl -tag -width Ds
-.It Fl bid Ar loadBalancerId
-Identifier of target load balancer.
-.El
 .El
 .\" EXIT STATUS
 .Sh EXIT STATUS
