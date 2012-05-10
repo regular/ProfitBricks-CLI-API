@@ -7,6 +7,7 @@
 # support@profitbricks.com
 #
 # This program is launched by src/pbcli.py, you can launch it yourself if you want
+# It returns exit code 1 if the application was updated, 0 otherwise (it's up-to-date or there was an error)
 #
 
 echo -n 'Checking for updates: '
