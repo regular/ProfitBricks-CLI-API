@@ -259,8 +259,8 @@ The ID of the data center in which to create the virtual storage
 Size of the virtual storage in gigabytes.
 .It Op Fl name Ar name
 Name for the virtual storage.
-.It Op Fl mountImageId Ar imageId
-The ID of a virtual image to be mounted on the newly created virtual storage.
+.It Op Fl imgId Ar imageId
+The ID of a virtual image to be assigned to the newly created virtual storage.
 .El
 .It Ar getStorage
 Return information about the virtual storage:
@@ -303,7 +303,7 @@ Updates parameters of an existing virtual storage device.
 Renames the virtual storage.
 .It Op Fl size Ar GiB
 Updates the size of the virtual storage (in gigabytes).
-.It Op Fl mountImageId Ar imageId
+.It Op Fl imgId Ar imageId
 Assigns or reassigns an image to the storage.
 .El
 .It Ar deleteStorage

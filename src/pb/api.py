@@ -110,7 +110,7 @@ class API:
 		return self.call("deleteServer", [id])
 	
 	def createStorage(self, userArgs):
-		args = self.parseArgs(userArgs, {"dcid": "dataCenterId", "size": "size", "name": "storageName", "mountImageId": "mountImageId"})
+		args = self.parseArgs(userArgs, {"dcid": "dataCenterId", "size": "size", "name": "storageName", "imgid": "mountImageId"})
 		return self.call("createStorage", [args])
 	
 	def getStorage(self, id):
@@ -125,7 +125,7 @@ class API:
 		return self.call("disconnectStorageFromServer", [stoId, srvId])
 	
 	def updateStorage(self, userArgs):
-		args = self.parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size", "mountImageId": "mountImageId"})
+		args = self.parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size", "imgid": "mountImageId"})
 		return self.call("updateStorage", [args])
 	
 	def deleteStorage(self, id):
