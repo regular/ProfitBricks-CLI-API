@@ -15,6 +15,6 @@ my_args="$*"
 
 # Launch src/pbcli.py
 cd src
-./pbcli.py "$auth_args $my_args"
+./pbcli.py $auth_args $my_args
 cd ..
 

@@ -11,7 +11,7 @@ class ArgsParser:
 		# -u -p -auth -debug and -s are base arguments, everything else are operation arguments
 		# operation argument names are converted to lower-case and have dashes removed (eg, "create-datacenter -nA-Me hello" => baseArgs["op"]="create-datacenter", opArgs["name"]="hello")
 		while i < len(argv):
-			arg = argv[i]
+			arg = argv[i].strip(" \r\n\t")
 			if arg == "-" or arg == "":
 				i += 1
 				continue

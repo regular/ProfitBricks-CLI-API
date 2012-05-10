@@ -95,6 +95,9 @@ class Shell:
 				pb.errorhandler.initializing -= 1
 				argsParser.readUserArgs(args)
 				requestedOp = argsParser.getRequestedOperation()
+				if requestedOp is None:
+					self.out('Invalid operation')
+					return
 				if requestedOp[0] == '@':
 					helper = pb.helper.Helper()
 					pb.argsparser.ArgsParser.operations[requestedOp]['lambda'](helper)
@@ -212,6 +215,7 @@ def auth_update():
 
 if auth_update():
 	restart_program('The API has been updated and the application will now restart.')
+
 shell = Shell()
 shell.start()
 
