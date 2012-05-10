@@ -8,6 +8,8 @@
 #
 # This program is launched by src/pbcli.py, you can launch it yourself if you want
 # It returns exit code 1 if the application was updated, 0 otherwise (it's up-to-date or there was an error)
+# You may not modify this updater (this file) even as a ProfitBricks dev unless you put all your changes after
+# the line marked with "AFTER THIS LINE" in its comment; if you change anything before it, you will break it!
 #
 
 exit_code=0 # = 0 if nothing happened, = 1 if we updated
@@ -23,7 +25,9 @@ if [ "$git_dir" != "" ]; then # we have a ".git" directory
 	pushd . >/dev/null
 	cd "$git_dir"
 	if [ "$(which git 2>&1 >/dev/null ; echo $?)" -eq "0" ]; then # we have the git application
-		git pull | grep 'files changed' | grep 'insertions' | grep 'deletions'
+		git_output="$(git pull)"
+		# The updater my be modified beyond this line! (AFTER THIS LINE!)
+		echo "$git_output" | grep 'files changed' | grep 'insertions' | grep 'deletions'
 		if [ "$?" -eq "0" ]; then
 			exit_code=1
 			rm -rf "test" >/dev/null
