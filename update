@@ -4,8 +4,8 @@ echo -n "Checking for updates: "
 exit_code=0
 
 if [ -d "$(dirname $(readlink -f $0))/.git" ]; then
-	( which git >/dev/null )
-	|| ( echo "Nothing to do (git not found)" )
+	( which git >/dev/null ) \
+	|| ( echo "Nothing to do (git not found)" ) \
 	&& (
 		git pull | grep 'Already up-to-date.'
 		exit_code=$?
