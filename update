@@ -9,7 +9,6 @@
 # This program is launched by src/pbcli.py, you can launch it yourself if you want
 #
 
-
 echo -n 'Checking for updates: '
 exit_code=0
 
