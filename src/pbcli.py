@@ -186,10 +186,19 @@ class Shell:
 	def do_nothing(self):
 		pass
 
+def restart_program():
+	# Restarts the current program.
+	# Note: this function does not return. Any cleanup action (like
+	# saving data) must be done before calling this function.
+	sys.stdout.flush()
+	os.fsync()
+	python = sys.executable
+	os.execl(python, python, * sys.argv)
+
 if platform.system() == 'Linux' and os.path.isfile('../update'):
 	if os.system('../update'):
-		print 'The API has been updated. Please restart.'
-		sys.exit(4)
+		print 'The API has been updated and the application will now restart.'
+		restart_program()
 
 shell = Shell()
 shell.start()
