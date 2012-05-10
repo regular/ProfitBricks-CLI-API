@@ -1,14 +1,17 @@
 #!/bin/bash
 
 echo -n "Checking for updates: "
+exit_code=0
 [ -d "$(dirname $(readlink -f $0))/.git" ] && ( which git >/dev/null ) && (
 	(
 		git pull | grep 'Already up-to-date.'
-		exit $?
+		exit_code=$?
 	) || (
 		echo "Internal error."
 	)
 ) || (
 	echo "Nothing to do (git not found)"
 )
+
+exit $exit_code
 
