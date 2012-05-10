@@ -196,11 +196,22 @@ def restart_program(msg = None):
 	python = sys.executable
 	os.execl(python, python, * sys.argv)
 
-if platform.system() == 'Linux' and os.path.isfile('../update'):
-	exit_code = os.system('../update')
-	if exit_code > 0:
-		restart_program('The API has been updated and the application will now restart.')
+def auth_update():
+	print "Checking for updates: ",
+	system=platform.system()
+	if system == 'Linux':
+		if os.path.isfile('./update.sh'):
+			sys.stdout.flush()
+			exit_code = os.system('./update.sh')
+			return (exit_code > 0)
+		else:
+			print "Updater not found, skpping."
+	else:
+		print "Can only update on Linux systems (found: " + system + ")."
+	return False
 
+if auth_update():
+	restart_program('The API has been updated and the application will now restart.')
 shell = Shell()
 shell.start()
 
