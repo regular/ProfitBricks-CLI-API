@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -n "Attempting to update the ProfitBricks API CLI: "
+
+git pull
+

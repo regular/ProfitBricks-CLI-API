@@ -186,5 +186,11 @@ class Shell:
 	def do_nothing(self):
 		pass
 
-Shell().start()
+if platform.system() == 'Linux' and os.path.isfile('../update'):
+	if os.system('../update'):
+		print 'The API has been updated. Please restart.'
+		sys.exit(4)
+
+shell = Shell()
+shell.start()
 
