@@ -195,7 +195,7 @@ def restart_program():
 	os.execl(python, python, * sys.argv)
 
 if platform.system() == 'Linux' and os.path.isfile('../update'):
-	if os.system('../update'):
+	if os.system('../update') > 0:
 		print 'The API has been updated and the application will now restart.'
 		restart_program()
 	else:
