@@ -24,6 +24,9 @@ import pb.api
 import pb.formatter
 import pb.argsparser
 import pb.helper
+import pb.errorhandler
+
+pb.errorhandler.should_exit_python += 1
 
 ## Parse arguments
 
@@ -36,8 +39,7 @@ requestedOp = argsParser.getRequestedOperation()
 if requestedOp is None:
 	if argsParser.baseArgs["debug"]:
 		print sys.argv
-	print "Error: Unknown operation:", argsParser.baseArgs["op"]
-	sys.exit(2)
+	pb.errorhandler.ArgsError("Unknown operation: " + argsParser.baseArgs["op"])
 
 # @ operations don't require pb api nor authentication
 
