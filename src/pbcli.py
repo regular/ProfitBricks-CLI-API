@@ -201,8 +201,6 @@ if platform.system() == 'Linux' and os.path.isfile('../update'):
 	print "Exit code:", exit_code
 	if exit_code > 0:
 		restart_program('The API has been updated and the application will now restart.')
-	else:
-		print "Continuing."
 
 shell = Shell()
 shell.start()
