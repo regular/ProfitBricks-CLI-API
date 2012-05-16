@@ -1,12 +1,12 @@
 Copyright 2012 ProfitBricks GmbH
-Version 1.0 released Apr 27th 2012
+Version 1.1 released May 16th 2012
 
 =============================================
 == ProfitBricks API Command-Line Interface ==
 =============================================
 
-Git source: git://github.com/profitbricks/ProfitBricks-CLI-API.git
-Source code: https://github.com/profitbricks/ProfitBricks-CLI-API/zipball/master
+Git sources, recommended: git://github.com/profitbricks/ProfitBricks-CLI-API.git
+Zip sources: https://github.com/profitbricks/ProfitBricks-CLI-API/zipball/master
 
 1. PREREQUISITES FOR LINUX
 ==========================
@@ -20,9 +20,9 @@ sudo easy_install suds
 ============================
 
 First step, install setuptools from here: http://pypi.python.org/pypi/setuptools
-Then open a cmd window and run C:\Python27\scripts\easy_install suds (replace 27
+then open a cmd window and run C:\Python27\scripts\easy_install suds (replace 27
 with whatever version of python you have installed; this was tested to work with
-python 2.7 on Windows 7 x64)
+Python 2.7 on Windows 7 x64)
 
 3. AUTHENTICATION SETUP
 =======================
@@ -38,7 +38,7 @@ your password.
 ==============
 
 Use the pbcli.py application for a better interface. Type 'help' to get help (it
-will load the pbapi.1 man page) or list to get a list of available commands. The
+will load the pbapi.1 man page) or 'list' to get see the available commands. The
 pbcli interface supports tab completion, has basic history and allows you to set
 a default working datacenter and wait after all provisioning operations until it
 becomes available again.
@@ -49,8 +49,8 @@ becomes available again.
 The application will automatically update its self on Unix or Linux systems if a
 git revision control application is installed. If an update is found, the system
 will update from the repository and will restart the pbcli.py application. There
-is no auto-update for pbapi.py, but you can always run ./update yourself. On the
-other platforms (Windows) you need to update from git yourself.
+is no auto-update for pbapi.py, but you can always run update.sh yourself. To do
+an update on other platforms (Windows), simply do a git pull.
 
 Report bugs to bugs at profitbricks dot com
 Request support using support at profitbricks dot com

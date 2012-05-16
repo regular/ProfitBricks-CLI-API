@@ -15,7 +15,7 @@ import pb.errorhandler
 
 class Shell:
 
-	version = '1.0'
+	version = '1.1'
 
 	cmds_internal = {}
 	cmds_api = pb.argsparser.ArgsParser().operations

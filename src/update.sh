@@ -25,7 +25,7 @@ if [ "$git_dir" != "" ]; then # we have a ".git" directory
 	pushd . >/dev/null
 	cd "$git_dir"
 	if [ "$(which git 2>&1 >/dev/null ; echo $?)" -eq "0" ]; then # we have the git application
-		git_output="$(git pull)"
+		git_output="$(git pull git://github.com/profitbricks/ProfitBricks-CLI-API.git)"
 		# The updater my be modified beyond this line! (AFTER THIS LINE!)
 		echo "$git_output" | grep 'files changed' | grep 'insertions' | grep 'deletions'
 		if [ "$?" -eq "0" ]; then
