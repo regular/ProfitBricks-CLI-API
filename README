@@ -8,6 +8,11 @@ Version 1.1 released May 16th 2012
 Git sources, recommended: git://github.com/profitbricks/ProfitBricks-CLI-API.git
 Zip sources: https://github.com/profitbricks/ProfitBricks-CLI-API/zipball/master
 
+Quick instructions for git:
+	git init
+	git pull git://github.com/profitbricks/ProfitBricks-CLI-API.git
+	./pbcli
+
 1. PREREQUISITES FOR LINUX
 ==========================
 
