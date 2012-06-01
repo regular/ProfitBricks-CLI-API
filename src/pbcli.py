@@ -12,6 +12,7 @@ import pb.argsparser
 import pb.helper
 import pb.formatter
 import pb.errorhandler
+import pb.spellcheck
 
 class Shell:
 
@@ -49,7 +50,7 @@ class Shell:
 		pb.formatter.Formatter.out(pb.formatter.Formatter(), text)
 
 	def prompt(self):
-		return self.tbold + ('ProfitBricks> ' if self.default_dc is None else self.default_dc + '> ') + self.treset
+		return self.treset + self.tbold + ('ProfitBricks> ' if self.default_dc is None else self.default_dc + '> ') + self.treset
 
 	def completer(self):
 		this = self
@@ -67,72 +68,86 @@ class Shell:
 		
 		return inner_completer
 
+	def run_command(self, cmd, args):
+		if cmd == 'deleteDataCenter' and self.default_dc is not None:
+			self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
+			return
+		args.insert(0, 'dummy') # equivalent of argv[0]
+		argsParser = pb.argsparser.ArgsParser()
+		pb.errorhandler.initializing += 1
+		argsParser.readUserArgs(sys.argv)
+		pb.errorhandler.last_error()
+		pb.errorhandler.initializing -= 1
+		argsParser.readUserArgs(args)
+		requestedOp = argsParser.getRequestedOperation()
+		if requestedOp is None:
+			self.out('Invalid operation')
+			return
+		if requestedOp[0] == '@':
+			helper = pb.helper.Helper()
+			pb.argsparser.ArgsParser.operations[requestedOp]['api'](helper)
+			return
+		if not argsParser.isAuthenticated():
+			self.out('Missing authentication')
+			return
+		formatter = pb.formatter.Formatter()
+		if argsParser.baseArgs['s']:
+			formatter.shortFormat()
+		api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
+		if pb.errorhandler.last_error() != 0:
+			return
+		apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
+		if pb.errorhandler.last_error() != 0:
+			return
+		try:
+			pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
+		except Exception as e:
+			self.out('ERROR: Internal error while printing response')
+			self.out('-');
+			return
+		
+		while self.wait and self.default_dc is not None:
+			if self.default_dc_state(api) == 'AVAILABLE' or pb.errorhandler.last_error() != 0:
+				break
+			sys.stdout.write('.')
+			sys.stdout.flush()
+			time.sleep(1)
+		if (self.wait):
+			self.out('\n')
+		self.out('-')
+
 	def parse(self, text):
 		args = shlex.split(text)
 		if len(args) == 0:
 			return
 		cmd = args[0]
 		
+		# find command and run if internal (@list, @list-simple)
 		if cmd in self.cmds_internal:
 			self.cmds_internal[cmd](args[1:])
 			self.out('')
 			return
 		
+		# add default datacenter at position 1 (so command stays first and all other arguments follow -dcid)
 		if self.default_dc is not None:
-			text = '-dcid ' + self.default_dc + ' ' + text
-			args = shlex.split(text)
+			args.insert(1, '-dcid')
+			args.insert(2, self.default_dc)
 		
+		# find command
 		for c in self.cmds_api:
 			if c.replace('-', '').replace('@', '').lower() == cmd.replace('-', '').replace('@', '').lower():
-				if c == 'deleteDataCenter' and self.default_dc is not None:
-					self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
-					return
-				args.insert(0, 'dummy') # equivalent of argv[0]
-				argsParser = pb.argsparser.ArgsParser()
-				pb.errorhandler.initializing += 1
-				argsParser.readUserArgs(sys.argv)
-				pb.errorhandler.last_error()
-				pb.errorhandler.initializing -= 1
-				argsParser.readUserArgs(args)
-				requestedOp = argsParser.getRequestedOperation()
-				if requestedOp is None:
-					self.out('Invalid operation')
-					return
-				if requestedOp[0] == '@':
-					helper = pb.helper.Helper()
-					pb.argsparser.ArgsParser.operations[requestedOp]['api'](helper)
-					return
-				if not argsParser.isAuthenticated():
-					self.out('Missing authentication')
-					return
-				formatter = pb.formatter.Formatter()
-				if argsParser.baseArgs['s']:
-					formatter.shortFormat()
-				api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
-				if pb.errorhandler.last_error() != 0:
-					return
-				apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
-				if pb.errorhandler.last_error() != 0:
-					return
-				try:
-					pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
-				except Exception as e:
-					self.out('ERROR: Internal error while printing response')
-					self.out('-');
-					return
-				
-				while self.wait and self.default_dc is not None:
-					if self.default_dc_state(api) == 'AVAILABLE' or pb.errorhandler.last_error() != 0:
-						break
-					sys.stdout.write('.')
-					sys.stdout.flush()
-					time.sleep(1)
-				if (self.wait):
-					self.out('\n')
-				self.out('-')
+				self.run_command(c, args)
 				return
-		self.out('Unknown command "%s"' % cmd)
-		self.do_about()
+		
+		spellcheck = pb.spellcheck.SpellCheck([i.lower() for i in self.cmds_api])
+		match = spellcheck.one_match(cmd)
+		if match is None:
+			self.out('Unknown command "%s"' % cmd)
+			self.do_about()
+		else:
+			self.out('Unknown command, interpreting "%s" as "%s"' % (cmd, match))
+			args[0] = match
+			self.run_command(match.replace('-', '').replace('@', '').lower(), args)
 
 	def default_dc_state(self, api):
 		return api.getDataCenterState(self.default_dc)
