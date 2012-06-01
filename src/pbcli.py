@@ -85,7 +85,7 @@ class Shell:
 		for c in self.cmds_api:
 			if c.replace('-', '').replace('@', '').lower() == cmd.replace('-', '').replace('@', '').lower():
 				if c == 'deleteDataCenter' and self.default_dc is not None:
-					self.out('Data center ' + self.default_dc + ' is in use. You may not perform data center deletion operations. Type \'use\' to reset and try again\n')
+					self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
 					return
 				args.insert(0, 'dummy') # equivalent of argv[0]
 				argsParser = pb.argsparser.ArgsParser()
@@ -131,6 +131,8 @@ class Shell:
 					self.out('\n')
 				self.out('-')
 				return
+		self.out('Unknown command "%s"' % cmd)
+		self.do_about()
 
 	def default_dc_state(self, api):
 		return api.getDataCenterState(self.default_dc)
