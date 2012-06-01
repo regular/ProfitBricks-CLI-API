@@ -32,7 +32,7 @@ Python 2.7 on Windows 7 x64)
 
 To avoid having to type your username and password or link to the authentication
 file every time you log in, you create a file with the name default.auth and put
-it in the working directory of pbapi.py; write your ProfitBricks username on the
+it in the current working directory, and write your ProfitBricks username on the
 first line and your password on the second line. This is not required, but it is
 recommended unless there is a risk of someone else reading the file and exposing
 your password.
