@@ -1,3 +1,5 @@
+import errorhandler
+
 class Formatter:
 	
 	indentValue = 0

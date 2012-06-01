@@ -24,7 +24,7 @@ class ArgsParser:
 			# base args
 			if arg.lower() == "-u":
 				if i == len(argv) - 1:
-					ProfitBricks.ArgsError("Missing username")
+					errorhandler.ArgsError("Missing username")
 				self.baseArgs["u"] = argv[i + 1]
 				i += 1
 			elif arg.lower() == "-p":
@@ -36,7 +36,7 @@ class ArgsParser:
 				i += 1
 			elif arg.lower() == "-auth":
 				if i == len(argv) - 1:
-					ProfitBricks.ArgsError("Missing authfile")
+					errorhandler.ArgsError("Missing authfile")
 				self.baseArgs["auth"] = argv[i + 1]
 				try:
 					authFile = open(argv[i + 1], "r")
@@ -44,7 +44,7 @@ class ArgsParser:
 					self.baseArgs["p"] = authFile.readline().strip("\n")
 					authFile.close()
 				except:
-					ProfitBricks.ArgsError("Authfile does not exist or cannot be read")
+					errorhandler.ArgsError("Authfile does not exist or cannot be read")
 				i += 1
 			elif arg.lower() == "-debug":
 				self.baseArgs["debug"] = True
@@ -78,7 +78,7 @@ class ArgsParser:
 	def _loadAuthFile(self):
 		if "u" not in self.baseArgs or "p" not in self.baseArgs:
 			try:
-				authFile = open("default.auth", "r")
+				authFile = open("./default.auth", "r")
 				self.baseArgs["u"] = authFile.readline().strip("\n")
 				self.baseArgs["p"] = authFile.readline().strip("\n")
 				authFile.close()
@@ -91,191 +91,236 @@ class ArgsParser:
 	operations = {
 			"createDataCenter": {
 				"args": ["name"],
-				"lambda": lambda formatter, api, opArgs: formatter.printCreateDataCenter(api.createDataCenter(opArgs["name"]))
+				"api": lambda api, opArgs: api.createDataCenter(opArgs["name"]),
+				"out": lambda formatter, apiResult: formatter.printCreateDataCenter(apiResult)
 			},
 			"getDataCenter": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDataCenter(api.getDataCenter(opArgs["dcid"]))
+				"api": lambda api, opArgs: api.getDataCenter(opArgs["dcid"]),
+				"out": lambda formatter, apiResult: formatter.printDataCenter(apiResult)
 			},
 			"getDataCenterState": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDataCenterState(api.getDataCenterState(opArgs["dcid"]))
+				"api": lambda api, opArgs: api.getDataCenterState(opArgs["dcid"]),
+				"out": lambda formatter, apiResult: formatter.printDataCenterState(apiResult)
 			},
 			"getAllDataCenters": {
 				"args": [],
-				"lambda": lambda formatter, api, opArgs: formatter.printAllDataCenters(api.getAllDataCenters())
+				"api": lambda api, opArgs: api.getAllDataCenters(),
+				"out": lambda formatter, apiResult: formatter.printAllDataCenters(apiResult)
 			},
 			"updateDataCenter": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printUpdateDataCenter(api.updateDataCenter(opArgs))
+				"api": lambda api, opArgs: api.updateDataCenter(opArgs),
+				"out": lambda formatter, apiResult: formatter.printUpdateDataCenter(apiResult)
 			},
 			"clearDataCenter": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printClearDataCenter(api.clearDataCenter(opArgs["dcid"]))
+				"api": lambda api, opArgs: api.clearDataCenter(opArgs["dcid"]),
+				"out": lambda formatter, apiResult: formatter.printClearDataCenter(apiResult)
 			},
 			"deleteDataCenter": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteDataCenter(api.deleteDataCenter(opArgs["dcid"]))
+				"api": lambda api, opArgs: api.deleteDataCenter(opArgs["dcid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteDataCenter(apiResult)
 			},
 			"createServer": {
 				"args": ["cores", "ram"],
-				"lambda": lambda formatter, api, opArgs: formatter.printCreateServer(api.createServer(opArgs))
+				"api": lambda api, opArgs: api.createServer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printCreateServer(apiResult)
 			},
 			"getServer": {
 				"args": ["srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printServer(api.getServer(opArgs["srvid"]))
+				"api": lambda api, opArgs: api.getServer(opArgs["srvid"]),
+				"out": lambda formatter, apiResult: formatter.printServer(apiResult)
 			},
 			"rebootServer": {
 				"args": ["srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printRebootServer(api.rebootServer(opArgs["srvid"]))
+				"api": lambda api, opArgs: api.rebootServer(opArgs["srvid"]),
+				"out": lambda formatter, apiResult: formatter.printRebootServer(apiResult)
 			},
 			"updateServer": {
 				"args": ["srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printUpdateServer(api.updateServer(opArgs))
+				"api": lambda api, opArgs: api.updateServer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printDataCenter(apiResult)
 			},
 			"deleteServer": {
 				"args": ["srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteServer(api.deleteServer(opArgs["srvid"]))
+				"api": lambda api, opArgs: api.deleteServer(opArgs["srvid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteServer(apiResult)
 			},
 			"createStorage": {
 				"args": ["size", "dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printCreateStorage(api.createStorage(opArgs))
+				"api": lambda api, opArgs: api.createStorage(opArgs),
+				"out": lambda formatter, apiResult: formatter.printCreateStorage(apiResult)
 			},
 			"getStorage": {
 				"args": ["stoid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printStorage(api.getStorage(opArgs["stoid"]))
+				"api": lambda api, opArgs: api.getStorage(opArgs["stoid"]),
+				"out": lambda formatter, apiResult: formatter.printStorage(apiResult)
 			},
 			"connectStorageToServer": {
 				"args": ["stoid", "srvid", "bus"],
-				"lambda": lambda formatter, api, opArgs: formatter.printConnectStorageToServer(api.connectStorageToServer(opArgs))
+				"api": lambda api, opArgs: api.connectStorageToServer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printConnectStorageToServer(apiResult)
 			},
 			"disconnectStorageFromServer": {
 				"args": ["stoid", "srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDisconnectStorageFromServer(api.disconnectStorageFromServer(opArgs["stoid"], opArgs["srvid"]))
+				"api": lambda api, opArgs: api.disconnectStorageFromServer(opArgs["stoid"], opArgs["srvid"]),
+				"out": lambda formatter, apiResult: formatter.printDisconnectStorageFromServer(apiResult)
 			},
 			"updateStorage": {
 				"args": ["stoid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printUpdateStorage(api.updateStorage(opArgs))
+				"api": lambda api, opArgs: api.updateStorage(opArgs),
+				"out": lambda formatter, apiResult: formatter.printUpdateStorage(apiResult)
 			},
 			"deleteStorage": {
 				"args": ["stoid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteStorage(api.deleteStorage(opArgs["stoid"]))
+				"api": lambda api, opArgs: api.deleteStorage(opArgs["stoid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteStorage(apiResult)
 			},
 			"createLoadBalancer": {
 				"args": ["dcid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printCreateLoadBalancer(api.createLoadBalancer(opArgs))
+				"api": lambda api, opArgs: api.createLoadBalancer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printCreateLoadBalancer(apiResult)
 			},
 			"getLoadBalancer": {
 				"args": ["bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printLoadBalancer(api.getLoadBalancer(opArgs["bid"]))
+				"api": lambda api, opArgs: api.getLoadBalancer(opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printLoadBalancer(apiResult)
 			},
 			"updateLoadBalancer": {
 				"args": ["bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printUpdateLoadBalancer(api.updateLoadBalancer(opArgs))
+				"api": lambda api, opArgs: api.updateLoadBalancer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printUpdateLoadBalancer(apiResult)
 			},
 			"registerServersOnLoadBalancer": {
 				"args": ["srvid", "bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printRegisterServersOnLoadBalancer(api.registerServersOnLoadBalancer(opArgs["srvid"].split(","), opArgs["bid"]))
+				"api": lambda api, opArgs: api.registerServersOnLoadBalancer(opArgs["srvid"].split(","), opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printRegisterServersOnLoadBalancer(apiResult)
 			},
 			"deregisterServersOnLoadBalancer": {
 				"args": ["srvid", "bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeregisterServersOnLoadBalancer(api.deregisterServersOnLoadBalancer(opArgs["srvid"].split(","), opArgs["bid"]))
+				"api": lambda api, opArgs: api.deregisterServersOnLoadBalancer(opArgs["srvid"].split(","), opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printDeregisterServersOnLoadBalancer(apiResult)
 			},
 			"activateLoadBalancingOnServers": {
 				"args": ["srvid", "bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printActivateLoadBalancingOnServers(api.activateLoadBalancingOnServers(opArgs["srvid"].split(","), opArgs["bid"]))
+				"api": lambda api, opArgs: api.activateLoadBalancingOnServers(opArgs["srvid"].split(","), opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printActivateLoadBalancingOnServers(apiResult)
 			},
 			"deactivateLoadBalancingOnServers": {
 				"args": ["srvid", "bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeactivateLoadBalancingOnServers(api.deactivateLoadBalancingOnServers(opArgs["srvid"].split(","), opArgs["bid"]))
+				"api": lambda api, opArgs: api.deactivateLoadBalancingOnServers(opArgs["srvid"].split(","), opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printDeactivateLoadBalancingOnServers(apiResult)
 			},
 			"deleteLoadBalancer": {
 				"args": ["bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteLoadBalancer(api.deleteLoadBalancer(opArgs["bid"]))
+				"api": lambda api, opArgs: api.deleteLoadBalancer(opArgs["bid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteLoadBalancer(apiResult)
 			},
 			"addRomDriveToServer": {
 				"args": ["imgid", "srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printAddRomDriveToServer(api.addRomDriveToServer(opArgs))
+				"api": lambda api, opArgs: api.addRomDriveToServer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printAddRomDriveToServer(apiResult)
 			},
 			"removeRomDriveFromServer": {
 				"args": ["imgid", "srvid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printRemoveRomDriveFromServer(api.removeRomDriveFromServer(opArgs))
+				"api": lambda api, opArgs: api.removeRomDriveFromServer(opArgs),
+				"out": lambda formatter, apiResult: formatter.printRemoveRomDriveFromServer(apiResult)
 			},
 			"setImageOsType": {
 				"args": ["imgid", "ostype"],
-				"lambda": lambda formatter, api, opArgs: formatter.printSetImageOsType(api.setImageOsType(opArgs["imgid"], opArgs["ostype"]))
+				"api": lambda api, opArgs: api.setImageOsType(opArgs["imgid"], opArgs["ostype"]),
+				"out": lambda formatter, apiResult: formatter.printSetImageOsType(apiResult)
 			},
 			"getImage": {
 				"args": ["imgid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printImage(api.getImage(opArgs["imgid"]))
+				"api": lambda api, opArgs: api.getImage(opArgs["imgid"]),
+				"out": lambda formatter, apiResult: formatter.printImage(apiResult)
 			},
 			"getAllImages": {
 				"args": [],
-				"lambda": lambda formatter, api, opArgs: formatter.printAllImages(api.getAllImages())
+				"api": lambda api, opArgs: api.getAllImages(),
+				"out": lambda formatter, apiResult: formatter.printAllImages(apiResult)
 			},
 			"deleteImage": {
 				"args": ["imgid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteImage(api.deleteImage(opArgs["imgid"]))
+				"api": lambda api, opArgs: api.deleteImage(opArgs["imgid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteImage(apiResult)
 			},
 			"createNIC": {
 				"args": ["srvid", "lanid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printCreateNIC(api.createNIC(opArgs))
+				"api": lambda api, opArgs: api.createNIC(opArgs),
+				"out": lambda formatter, apiResult: formatter.printCreateNIC(apiResult)
 			},
 			"getNIC": {
 				"args": ["nicid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printNIC(api.getNIC(opArgs["nicid"]))
+				"api": lambda api, opArgs: api.getNIC(opArgs["nicid"]),
+				"out": lambda formatter, apiResult: formatter.printNIC(apiResult)
 			},
 			"enableInternetAccess": {
 				"args": ["dcid", "lanid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printEnableInternetAccess(api.setInternetAccess(opArgs["dcid"], opArgs["lanid"], True))
+				"api": lambda api, opArgs: api.setInternetAccess(opArgs["dcid"], opArgs["lanid"], True),
+				"out": lambda formatter, apiResult: formatter.printEnableInternetAccess(apiResult)
 			},
 			"disableInternetAccess": {
 				"args": ["dcid", "lanid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDisableInternetAccess(api.setInternetAccess(opArgs["dcid"], opArgs["lanid"], False))
+				"api": lambda api, opArgs: api.setInternetAccess(opArgs["dcid"], opArgs["lanid"], False),
+				"out": lambda formatter, apiResult: formatter.printDisableInternetAccess(apiResult)
 			},
 			"updateNic": {
 				"args": ["nicid", "lanid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printUpdateNIC(api.updateNIC(opArgs))
+				"api": lambda api, opArgs: api.updateNIC(opArgs),
+				"out": lambda formatter, apiResult: formatter.printUpdateNIC(apiResult)
 			},
 			"deleteNic": {
 				"args": ["nicid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printDeleteNIC(api.deleteNIC(opArgs["nicid"]))
+				"api": lambda api, opArgs: api.deleteNIC(opArgs["nicid"]),
+				"out": lambda formatter, apiResult: formatter.printDeleteNIC(apiResult)
 			},
 			"reservePublicIpBlock": {
 				"args": ["size"],
-				"lambda": lambda formatter, api, opArgs: formatter.printPublicIPBlock(api.reservePublicIPBlock(opArgs["size"]))
+				"api": lambda api, opArgs: api.reservePublicIPBlock(opArgs["size"]),
+				"out": lambda formatter, apiResult: formatter.printPublicIPBlock(apiResult)
 			},
 			"addPublicIpToNic": {
 				"args": ["ip", "nicid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printAddPublicIPToNIC(api.addPublicIPToNIC(opArgs["ip"], opArgs["nicid"]))
+				"api": lambda api, opArgs: api.addPublicIPToNIC(opArgs["ip"], opArgs["nicid"]),
+				"out": lambda formatter, apiResult: formatter.printAddPublicIPToNIC(apiResult)
 			},
 			"getAllPublicIpBlocks": {
 				"args": [],
-				"lambda": lambda formatter, api, opArgs: formatter.printGetAllPublicIPBlocks(api.getAllPublicIPBlocks())
+				"api": lambda api, opArgs: api.getAllPublicIPBlocks(),
+				"out": lambda formatter, apiResult: formatter.printGetAllPublicIPBlocks(apiResult)
 			},
 			"removePublicIpFromNic": {
 				"args": ["ip", "nicid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printRemovePublicIPFromNIC(api.removePublicIPFromNIC(opArgs["ip"], opArgs["nicid"]))
+				"api": lambda api, opArgs: api.removePublicIPFromNIC(opArgs["ip"], opArgs["nicid"]),
+				"out": lambda formatter, apiResult: formatter.printRemovePublicIPFromNIC(apiResult)
 			},
 			"releasePublicIpBlock": {
 				"args": ["blockid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printReleasePublicIPBlock(api.releasePublicIPBlock(opArgs["blockid"]))
+				"api": lambda api, opArgs: api.releasePublicIPBlock(opArgs["blockid"]),
+				"out": lambda formatter, apiResult: formatter.printReleasePublicIPBlock(apiResult)
 			},
 			"addFirewallRuleToNic": {
 				"args": ["nicId"],
-				"lambda": lambda formatter, api, opArgs: formatter.printAddFirewallRule(api.addFirewallRuleToNic(opArgs["nicid"], opArgs))
+				"api": lambda api, opArgs: api.addFirewallRuleToNic(opArgs["nicid"], opArgs),
+				"out": lambda formatter, apiResult: formatter.printAddFirewallRule(apiResult)
 			},
 			"addFirewallRuleToLoadBalancer": {
 				"args": ["bid"],
-				"lambda": lambda formatter, api, opArgs: formatter.printAddFirewallRule(api.addFirewallRuleToLoadBalancer(opArgs["bid"], opArgs))
+				"api": lambda api, opArgs: api.addFirewallRuleToLoadBalancer(opArgs["bid"], opArgs),
+				"out": lambda formatter, apiResult: formatter.printAddFirewallRule(apiResult)
 			},
 			"@list": {
 				"args": [],
-				"lambda": lambda helper: helper.printOperations(ArgsParser.operations)
+				"api": lambda helper: helper.printOperations(ArgsParser.operations)
 			},
 			"@list-simple": {
 				"args": [],
-				"lambda": lambda helper: helper.printOperationsSimple(ArgsParser.operations)
+				"api": lambda helper: helper.printOperationsSimple(ArgsParser.operations)
 			}
 		}
 

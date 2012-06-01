@@ -100,7 +100,7 @@ class Shell:
 					return
 				if requestedOp[0] == '@':
 					helper = pb.helper.Helper()
-					pb.argsparser.ArgsParser.operations[requestedOp]['lambda'](helper)
+					pb.argsparser.ArgsParser.operations[requestedOp]['api'](helper)
 					return
 				if not argsParser.isAuthenticated():
 					self.out('Missing authentication')
@@ -111,9 +111,16 @@ class Shell:
 				api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
 				if pb.errorhandler.last_error() != 0:
 					return
-				pb.argsparser.ArgsParser.operations[requestedOp]['lambda'](formatter, api, argsParser.opArgs)
+				apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
 				if pb.errorhandler.last_error() != 0:
 					return
+				try:
+					pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
+				except Exception as e:
+					self.out('ERROR: Internal error while printing response')
+					self.out('-');
+					return
+				
 				while self.wait and self.default_dc is not None:
 					if self.default_dc_state(api) == 'AVAILABLE' or pb.errorhandler.last_error() != 0:
 						break
@@ -183,7 +190,7 @@ class Shell:
 		self.wait = True
 
 	def do_nowait(self):
-		self.out('Operations will no longer wait for data center to become available')
+		self.out('All operations will immediately return control to the user without waiting for provisioning')
 		self.wait = False
 
 	def do_nothing(self):

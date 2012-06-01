@@ -45,7 +45,7 @@ if requestedOp is None:
 
 if requestedOp[0] == "@":
 	helper = pb.helper.Helper()
-	pb.argsparser.ArgsParser.operations[requestedOp]["lambda"](helper)
+	pb.argsparser.ArgsParser.operations[requestedOp]["api"](helper)
 	sys.exit(0)
 
 # perform regular (non-@) operation
@@ -59,7 +59,8 @@ if argsParser.baseArgs["s"]:
 
 api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
 
-pb.argsparser.ArgsParser.operations[requestedOp]["lambda"](formatter, api, argsParser.opArgs)
+apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
+pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
 if not argsParser.baseArgs["s"]:
 	print ""
 	print "Request ID:", str(api.requestId) if api.requestId is not None else "(none)"
