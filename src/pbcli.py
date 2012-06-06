@@ -1,5 +1,21 @@
 #!/usr/bin/python
 
+#
+# v1.1 Copyright 2012 ProfitBricks GmbH
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 import readline
 import sys
 import re
@@ -56,13 +72,13 @@ class Shell:
 		this = self
 		
 		def inner_completer(text, state):
-			text = text.replace('-', '').lower()
+			text = this.clean_cmd(text)
 			matches = []
 			for cmd in this.cmds_internal:
-				if cmd.replace('-', '').lower().startswith(text):
+				if this.clean_cmd(cmd).startswith(text):
 					matches.append(cmd)
 			for cmd in this.cmds_api:
-				if cmd.replace('-', '').lower().startswith(text):
+				if this.clean_cmd(cmd).startswith(text):
 					matches.append(cmd)
 			return pb.helper.Helper.camelCaseToDash(matches[state]) + ' ' if state < len(matches) else None
 		
@@ -93,21 +109,32 @@ class Shell:
 		formatter = pb.formatter.Formatter()
 		if argsParser.baseArgs['s']:
 			formatter.shortFormat()
-		api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
-		if pb.errorhandler.last_error() != 0:
+		
+		try:
+			api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
+		except Exception as ex:
+			self.out(ex.message);
 			return
-		apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
-		if pb.errorhandler.last_error() != 0:
+		
+		try:
+			apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
+		except Exception as ex:
+			self.out(ex.message);
 			return
+		
 		try:
 			pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
-		except Exception as e:
+		except Exception as ex:
 			self.out('ERROR: Internal error while printing response')
 			self.out('-');
 			return
 		
 		while self.wait and self.default_dc is not None:
-			if self.default_dc_state(api) == 'AVAILABLE' or pb.errorhandler.last_error() != 0:
+			try:
+				if self.default_dc_state(api) == 'AVAILABLE':
+					break
+			except Exception as ex:
+				self.out(ex.message)
 				break
 			sys.stdout.write('.')
 			sys.stdout.flush()
@@ -115,6 +142,9 @@ class Shell:
 		if (self.wait):
 			self.out('\n')
 		self.out('-')
+
+	def clean_cmd(self, cmd):
+		return cmd.replace('-', '').replace('@', '').lower();
 
 	def parse(self, text):
 		args = shlex.split(text)
@@ -135,8 +165,10 @@ class Shell:
 		
 		# find command
 		for c in self.cmds_api:
-			if c.replace('-', '').replace('@', '').lower() == cmd.replace('-', '').replace('@', '').lower():
+			if self.clean_cmd(c) == self.clean_cmd(cmd):
 				self.run_command(c, args)
+				if self.clean_cmd(cmd) == 'createdatacenter':
+					self.parse('get-all-datacenters')
 				return
 		
 		spellcheck = pb.spellcheck.SpellCheck([i.lower() for i in self.cmds_api])
@@ -147,7 +179,9 @@ class Shell:
 		else:
 			self.out('Unknown command, interpreting "%s" as "%s"' % (cmd, match))
 			args[0] = match
-			self.run_command(match.replace('-', '').replace('@', '').lower(), args)
+			if self.clean_cmd(match) == 'createdatacenter':
+				self.parse('get-all-datacenters')
+			self.run_command(self.clean_cmd(match), args)
 
 	def default_dc_state(self, api):
 		return api.getDataCenterState(self.default_dc)

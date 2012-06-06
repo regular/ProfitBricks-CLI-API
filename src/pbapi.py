@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-# v0.1 Copyright 2012 ProfitBricks GmbH
+# v1.1 Copyright 2012 ProfitBricks GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,11 +57,13 @@ formatter = pb.formatter.Formatter()
 if argsParser.baseArgs["s"]:
 	formatter.shortFormat()
 
-api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
-
-apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
-pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
-if not argsParser.baseArgs["s"]:
-	print ""
-	print "Request ID:", str(api.requestId) if api.requestId is not None else "(none)"
+try:
+	api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
+	apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
+	pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
+	if not argsParser.baseArgs["s"]:
+		print ""
+		print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
+except Exception as e:
+	print 'Error: %s' % e.message
 

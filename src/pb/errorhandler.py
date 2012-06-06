@@ -2,6 +2,10 @@ import sys
 
 initializing = 0 # increase when you're executing initialization commands; this will disable printing of error messages and should_exit_python!
 should_exit_python = 0
+e_ok = 0
+e_args = 1
+e_auth = 2
+e_soap = 3
 
 def last_error():
 	tmp = last_error.last
@@ -25,5 +29,5 @@ def exit(level = 0, message = None):
 class ArgsError:
 	
 	def __init__(self, message = None):
-		exit(1, "Invalid arguments" + ("" if message is None else ": " + message))
+		exit(e_args, "Invalid arguments" + ("" if message is None else ": " + message))
 
