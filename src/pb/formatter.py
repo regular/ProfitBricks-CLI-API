@@ -304,3 +304,64 @@ class Formatter:
 		print response
 		self.out()
 
+class CustomFormatter:
+	
+	format = ''
+	lastToken = None
+	
+	def __init__(self, format):
+		self.format = format
+	
+	def output(self, apiResult, requestId):
+		return ''
+	
+		import re
+		tokens = re.split('([\[.#]+(\w+|[^\].#]))', self.format)
+		
+		result = ''
+		top = None
+		
+		i = 0
+		while 0 < len(self.format):
+			
+			token = self.format[i]
+			print "> '%s'" % token
+			
+			if token == '[':
+				if top is not None:
+					result = result + str(top)
+					top = None
+				result = result + token[1:]
+				continue
+			
+			if token == '[requestId]':
+				result = result + str(requestId)
+				top = None
+				continue
+			
+			if token[0] == '[':
+				top = apiResult
+				print '>>> apiResult is top'
+			
+			if token[0] == '[' or token[0] == '.':
+				if token[1:] in top:
+					print '>>> property', token[1:]
+					top = top[token[1:]]
+				else:
+					return '[?%s]' % token
+				continue
+			
+			if token[0] == '#':
+				if token == '##':
+					top = len(top)
+				else:
+					pos = int(token[1:]) # TODO: check if int!
+				continue
+		
+		return result
+	
+	def __getattr__(self, name):
+		this = self
+		return lambda apiResult, requestId: this.output(apiResult, requestId)
+	
+
