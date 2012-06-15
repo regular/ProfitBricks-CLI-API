@@ -95,6 +95,10 @@ default_sto_name="${name_key}-sto"
 
 success="Operation completed" # do not change this unless it is also changed in src/pb/formatter.py
 
+## HELPERS ##
+
+default_dc_region="NORTH_AMERICA" # must be written exactly as set by createDataCenter and returned by getDataCenter
+
 ### ENABLED TESTS ###
 
 test_data_center="1"
@@ -103,12 +107,13 @@ test_storage="0"
 
 ### DATA CENTER ###
 
-create_dc_command="create-datacenter -name ${default_dc_name}"
+create_dc_command="create-datacenter -name ${default_dc_name} -region ${default_dc_region}"
 [ "${test_data_center}" == "1" ] && (
 	echo -e "\n === RUNNING DATA CENTER TESTS ===\n"
 	dc_id=`api ${create_dc_command} | grep 'ID:' | sed -e 's/.*ID: //'`
 	[ "${dc_id}" == "" ] && ( assert_text_failed "Create DataCenter" "ID:" "${create_dc_command}" ) || ( assert_passed "Create DataCenter (${dc_id})" )
 	assert_text "Get DataCenter" "${default_dc_name}" get-datacenter -dcid ${dc_id}
+	assert_text "Get DataCenter (region)" "${default_dc_region}" get-datacenter -dcid ${dc_id}
 	assert_text "Get DataCenter state" "Provisioning state" get-datacenter-state -dcid ${dc_id}
 	assert_text "Get all DataCenters" "${dc_id}" get-all-datacenters
 	assert_text "Clear empty DataCenter" "${success}" clear-datacenter -dcid ${dc_id}
