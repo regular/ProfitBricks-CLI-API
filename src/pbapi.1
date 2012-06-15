@@ -19,7 +19,7 @@
 .\" NAME
 .Sh NAME
 .Nm pbapi.py
-.Nd ProfitBricks API tools v1.1
+.Nd ProfitBricks API tools v1.1.1
 .\" SYNOPSYS
 .Sh SYNOPSYS
 .Nm
@@ -80,15 +80,15 @@ Enable short output formatting (display less information).
 .\" OVERVIEW
 .Sh OVERVIEW
 .Bl -tag -width Ds
-.It DataCenters: createDataCenter getDataCenter getDataCenterState getAllDataCenters updateDataCenter clearDataCenter deleteDataCenter
-.It Servers: createServer getServer rebootServer updateServer deleteServer
-.It Storages: createStorage getStorage connectStorageToServer disconnectStorageFromServer updateStorage deleteStorage
-.It CD/DVD-ROMs: addRomDriveToServer removeRomDriveFromServer
-.It Images: setImageOsType getImage getAllImages deleteImage
-.It NICs: createNic getNic setInternetAccess updateNic deleteNic
-.It IPs: reservePubilcIpBlock addPublicIpToNic getAllPublicIpBlocks removePublicIpFromNic releasePublicIpBlock
-.It Load balancers: createLoadBalancer getLoadBalancer updateLoadBalancer registerServersOnLoadBalancer deregisterServersOnLoadBalancer activateLoadBalancingOnServers deactivateLoadBalancingOnServers deleteLoadBalancer
-.\".It Firewalls: addFirewallRulesToNic addFirewallRulesToLoadBalancer getFirewall activateFirewalls deactivateFirewalls removeFirewallRules deleteFirewalls
+.It DataCenters: create-data-center get-data-center get-data-center-state get-all-datacenters update-data-center clear-data-center delete-data-center
+.It Servers: create-server get-server reboot-server update-server delete-server
+.It Storages: create-storage get-storage connect-storage-to-server disconnect-storage-from-server update-storage delete-storage
+.It CD/DVD-ROMs: add-rom-drive-to-server remove-rom-drive-from-server
+.It Images: set-omage-os-type get-image get-all-images delete-image
+.It NICs: create-nic get-nic set-internet-access update-nic delete-nic
+.It IPs: reserve-public-ip-block add-public-ip-to-nic get-all-public-ip-blocks remove-public-ip-from-nic release-public-ip-block
+.It Load balancers: create-load-balancer get-load-balancer update-load-balancer register-servers-on-load-balancer deregister-servers-on-load-balancer activate-load-balancing-on-servers deactivate-load-balancing-on-servers delete-load-balancer
+.It Firewalls: add-firewall-rules-to-nic add-firewall-rules-to-load-balancer get-firewall activate-firewalls deactivate-firewalls remove-firewall-rules delete-firewalls
 .El
 .\" DATACENTER OPERATIONS AND ARGUMENTS
 .Sh DATACENTER OPERATIONS AND ARGUMENTS
@@ -98,28 +98,32 @@ Enable short output formatting (display less information).
 The
 .Fl dcid Ar dataCenterId
 argument is mandatory for all operations except
-.Ar createDataCenter
+.Ar create-data-center
 and
-.Ar getAllDataCenters .
+.Ar get-all-datacenters .
 The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar createDataCenter
+.It Ar create-data-center
 In the case of
-.Ar createDataCenter
+.Ar create-data-center
 there is no need for
 .Fl dcid .
 Outputs the ID of the newly created data center.
 .Bl -tag -width Ds
 .It Op Fl name Ar name
 The name of the newly created Data Center. Cannot contain \@, \\, /, |, ", or \'.
+.It Op Fl region Ar region
+The geographical region in which to create the new Data Center, may be: EUROPE, NORTH_AMERICA, or DEFAULT (API v1.2)
 .El
-.It Ar getDataCenter
+.It Ar get-data-center
 Returns information about the Data Center:
 .Bl -tag -width Ds
 .It data center name
 Name of the Virtual Data Center.
+.It region
+Geographical region of the Virtual Data Center.
 .It state
 The current provisioning state (INACTIVE, INPROCESS, AVAILABLE, DELETED).
 .It servers
@@ -129,9 +133,9 @@ A list of Virtual Storages contained by the Virtual Data Center.
 .It version
 Version of the Virtual Data Center.
 .El
-.It Ar getDataCenterState
+.It Ar get-data-center-state
 Returns the data center provisioning state (INACTIVE, INPROCESS, AVAILABLE, DELETED).
-.It Ar getAllDataCenters
+.It Ar get-all-datacenters
 Returns a list of all data centers created by the current user.
 .Bl -tag -width Ds
 .It id
@@ -141,15 +145,15 @@ The name provided when the Virtual Data Center was created (or updated).
 .It version
 Version of the Virtual Data Center.
 .El
-.It Ar updateDataCenter
+.It Ar update-data-center
 Update the data center. The only argument that can be specified for now is the new name of the data center.
 .Bl -tag -width Ds
 .It Op Fl name Ar name
 The new name of the Data Center.
 .El
-.It Ar clearDataCenter
+.It Ar clear-data-center
 Removes all components from an existing data center.
-.It Ar deleteDataCenter
+.It Ar delete-data-center
 Deletes an empty Virtual Data Center. All components must be removed first.
 .El
 .\" VIRTUAL SERVER OPERATIONS AND ARGUMENTS
@@ -159,11 +163,11 @@ Deletes an empty Virtual Data Center. All components must be removed first.
 .Pp
 The
 .Fl srvid Ar serverId
-argument is mandatory for all operations except createServer. The
+argument is mandatory for all operations except create-server. The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar createServer
+.It Ar create-server
 Creates a Virtual Server within an existing Data Center. Parameters can be specified to set up a boot device and connect the server to an existing LAN or the Internet. This operation doesn't require the
 .Fl srvid
 argument.
@@ -189,7 +193,7 @@ will be connected to the Internet.
 .It Op Fl osType Ar osType
 Sets the OS type of the server (WINDOWS, OTHER). If left empty, the server will inherit the OS Type of its selected boot image / storage.
 .El
-.It Ar getServer
+.It Ar get-server
 Returns the following information about the server:
 .Bl -tag -width Ds
 .It server name
@@ -224,9 +228,9 @@ and
 .It os type
 Operating system type (WINDOWS, OTHER, UNKNOWN).
 .El
-.It Ar rebootServer
+.It Ar reboot-server
 Reboots an existing Virtual Server (POWER CYCLE).
-.It Ar updateServer
+.It Ar update-server
 Updates parameters of an existing Virtual Server.
 .Bl -tag -width Ds
 .It Op Fl name Ar serverName
@@ -242,7 +246,7 @@ Defines an existing storage device ID to be set as boot device of the server. Th
 .It Op Fl osType Ar osType
 Updates the OS type of the server (WINDOWS, OTHER). If left empty, the server will inherit the OS Type of its selected boot image / storage.
 .El
-.It Ar deleteServer
+.It Ar delete-server
 Deletes an existing virtual server.
 .El
 .\" VIRTUAL STORAGES OPERATIONS AND ARGUMENTS
@@ -252,13 +256,13 @@ Deletes an existing virtual server.
 .Pp
 The
 .Fl stoid Ar storageId
-argument is mandatory for all operations except createStorage. The
+argument is mandatory for all operations except create-storage. The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar createStorage
+.It Ar create-storage
 In the case of
-.Ar createStorage
+.Ar create-storage
 there is no need for
 .Fl stoid .
 Outputs the ID of the newly created virtual storage.
@@ -272,7 +276,7 @@ Name for the virtual storage.
 .It Op Fl imgId Ar imageId
 The ID of a virtual image to be assigned to the newly created virtual storage.
 .El
-.It Ar getStorage
+.It Ar get-storage
 Return information about the virtual storage:
 .Bl -tag -width Ds
 .It storage name
@@ -290,7 +294,7 @@ Information about the image assigned to the virtual storage.
 .It os type
 Operating system type of virtual storage (OTHER, WINDOWS, UNKNOWN).
 .El
-.It Ar connectStorageToServer
+.It Ar connect-storage-to-server
 Connects the virtual storage to an existing server.
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId
@@ -300,13 +304,13 @@ Bus type to which the storage will be connected (IDE, SCSI or VIRTIO)
 .It Op Fl devnum Ar deviceNumber
 Defines the device number of the virtual storage. If no device number is set, a device number will be automatically assigned.
 .El
-.It Ar disconnectStorageFromServer
+.It Ar disconnect-storage-from-server
 Disconnects the virtual storage from a connected server.
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId
 The ID of the connected virtual server.
 .El
-.It Ar updateStorage
+.It Ar update-storage
 Updates parameters of an existing virtual storage device.
 .Bl -tag -width Ds
 .It Op Fl name Ar name
@@ -316,7 +320,7 @@ Updates the size of the virtual storage (in gigabytes).
 .It Op Fl imgId Ar imageId
 Assigns or reassigns an image to the storage.
 .El
-.It Ar deleteStorage
+.It Ar delete-storage
 Deletes an existing virtual storage device.
 .El
 .\" CD/DVD-ROM DRIVE OPERATIONS AND ARGUMENTS
@@ -340,8 +344,8 @@ The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar addRomDriveToServer
-Adds a CD/DVD-ROM drive to an existing virtual server. Maximum CD/DVD-ROM drives are currently 2 (API v1.1).
+.It Ar add-rom-drive-to-server
+Adds a CD/DVD-ROM drive to an existing virtual server. Maximum CD/DVD-ROM drives are currently 2 (API v1.2).
 .Bl -tag -width Ds
 .It Op Fl devnum Ar deviceNumber
 Device number of the CD/DVD-ROM drive connected to the server. If no device number is set, a new device number will be assigned to the CD/DVD-ROM drive automatically.
@@ -357,12 +361,12 @@ Removes a CD/DVD-ROM drive from an existing virtual server.
 The
 .Fl imgid Ar imageId
 argument is mandatory for all operations except
-.Ar getAllImages
+.Ar get-all-images
 The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar setImageOsType
+.It Ar set-omage-os-type
 Sets the operating system type of an individual HDD or CD/DVD-ROM image that has been uploaded on the ProfitBricks FTP server.
 The default operating system type is UNKNOWN. Due to Microsoft's terms and conditions, the user has to set the operating system type of an uploaded Windows image to WINDOWS and
 therewith agrees with them as well as with the pricing.
@@ -373,15 +377,15 @@ Identifier of the target HDD or CD/DVD-ROM image.
 .It Op Fl ostype Ar osType
 Operating system type of the target image (WINDOWS, OTHER).
 .El
-.It Ar getImage
+.It Ar get-image
 Returns information about the HDD or CD/DVD-ROM (ISO) image.
 .Bl -tag -width Ds
 .It Fl imgid Ar imageId
 Identifier of the target image.
 .El
-.It Ar getAllImages
+.It Ar get-all-images
 Outputs a list of HDD and/or CD/DVD-ROM images existing on or uploaded to the ProfitBricks FTP server.
-.It Ar deleteImage
+.It Ar delete-image
 Deletes an existing HDD or CD/DVD-ROM (ISO) image.
 .Bl -tag -width Ds
 .It Fl imgid Ar imageId
@@ -397,7 +401,7 @@ The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar createNic
+.It Ar create-nic
 Creates a NIC on an existing virtual server.
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId
@@ -410,7 +414,7 @@ Public/private IP address.
 .It Op Fl name Ar nicName
 Name of the new NIC.
 .El
-.It Ar getNic
+.It Ar get-nic
 Returns information about the state and configuration of an existing NIC.
 .Bl -tag -width Ds
 .It Fl nicid Ar nicId
@@ -427,7 +431,7 @@ Identifier of the target LAN.
 .It Ar disableInternetAccess
 Removes Internet access from an existing NIC. The arguments are identical to the arguments of
 .Ar enableInternetAccess .
-.It Ar updateNic
+.It Ar update-nic
 Changes the settings of an existing NIC.
 .Bl -tag -width Ds
 .It Fl nicid Ar nicId
@@ -441,7 +445,7 @@ Public/private IP address. If you ommit the
 .Fl ip
 flag, the IP address will be reset!
 .El
-.It Ar deleteNic
+.It Ar delete-nic
 Deletes an existing NIC.
 .Bl -tag -width Ds
 .It Fl nicid Ar nicId
@@ -463,7 +467,7 @@ Reserves a specified amount of public IPs which can be manually assigned to a NI
 .It Fl size Ar blockSize
 Block size / amount of IPs to reserve.
 .El
-.It Ar addPublicIpToNic
+.It Ar add-public-ip-to-nic
 Adds an existing reserved public IP to a NIC. This operation is required when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.
 .Bl -tag -width Ds
 .It Fl ip Ar IP
@@ -471,9 +475,9 @@ Reserved IP.
 .It Fl nicid Ar nicId
 Identifier of the target NIC.
 .El
-.It Ar getAllPublicIpBlocks
+.It Ar get-all-public-ip-blocks
 Returns a list of all public IP blocks reserved by the user, including the reserved IPs and connected NICs.
-.It Ar removePublicIpFromNic
+.It Ar remove-public-ip-from-nic
 Removes a reserved public IP from a NIC. This operation is required when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.
 .Bl -tag -width Ds
 .It Fl ip Ar IP
@@ -481,7 +485,7 @@ Reserved IP.
 .It Fl nicid Ar nicId
 Identifier of the target NIC.
 .El
-.It Ar releasePublicIpBlock
+.It Ar release-public-ip-block
 Releases an existing block of reserved public IPs. Before releasing an IP block, ensure that no IP address in the respective IP block is assigned to a NIC anymore. Otherwise, the operation will fail.
 .Bl -tag -width Ds
 .It Fl blockid Ar blockId
@@ -497,7 +501,7 @@ The
 .Fl bid Ar loadBalancerId
 argument is mandatory for all operations except
 .Ar
-createLoadBalancer .
+create-load-balancer .
 .Bl -tag -width Ds
 .It Fl bid Ar loadBalancerId
 Identifier of the load balancer.
@@ -506,53 +510,53 @@ The
 .Ar operation
 may be:
 .Bl -tag -width Ds
-.It Ar createLoadBalancer
+.It Ar create-load-balancer
 Creates a virtual load balancer within an existing data center.
 .Bl -tag -width Ds
 .It Op Fl name Ar loadBalancerName
 Names the load balancer to be created.
 .It Op Fl algo Ar loadBalancerAlgorithm
-Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.1).
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.2).
 .It Op Fl ip Ar ip
 A DHCP IP address is being assigned to the load balancer automatically by ProfitBricks. A private IP can be simply defined by the user. Additional, public IPs can be reserved and assigned to the load balancer manually. (see reservePublicIpBlock)
 .It Op Fl srvId Ar serverIds
 List of server ids, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
-.It Ar getLoadBalancer
+.It Ar get-load-balancer
 Returns information about a virtual load balancer.
-.It Ar updateLoadBalancer
+.It Ar update-load-balancer
 .Bl -tag -width Ds
 .It Fl bid Ar loadBalancerId
 Identifier of the load balancer.
 .It Op Fl name Ar loadBalancerName
 Renames the virtual load balancer.
 .It Op Fl algo Ar loadBalancerAlgorithm
-Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.1).
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.2).
 .It Op Fl ip Ar ip
 Updates the load balancer with the specified IP. All servers connected to the load balancer will have their primary IP address updated with the same IP address of the load balancer implicitly. Additional customer reserved IP addresses, which have been added to the server's NIC, remain unchanged. Leave empty to reset the IP of the load balancer with a ProfitBricks assigned IP address.
 .El
-.It Ar registerServersOnLoadBalancer
+.It Ar register-servers-on-load-balancer
 Add new servers to an existing load balancer within the respective LAN. If the server is not yet a member of the LAN, a new NIC is created, connected to the LAN and registered with the load balancer. The load balancer will distribute traffic to the server through this balanced NIC. If the server is already a member of the LAN, the appropriate NIC is used as balanced NIC. A server can be registered to more than one load balancer.
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId,serverId
 Identifiers of servers to be registered with target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
-.It Ar deregisterServersOnLoadBalancer
+.It Ar deregister-servers-on-load-balancer
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId,serverId
 Identifiers of servers to be deregistered from target load balancer, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
-.It Ar activateLoadBalancingOnServers
+.It Ar activate-load-balancing-on-servers
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId,serverId
 Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
-.It Ar deactivateLoadBalancingOnServers
+.It Ar deactivate-load-balancing-on-servers
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId,serverId
 Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
-.It Ar deleteLoadBalancer
+.It Ar delete-load-balancer
 .El
 .\" EXIT STATUS
 .Sh EXIT STATUS
