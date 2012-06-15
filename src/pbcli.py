@@ -280,7 +280,11 @@ def auth_update():
 		if os.path.isfile('./update.sh'):
 			sys.stdout.flush()
 			exit_code = os.system('./update.sh')
-			return (exit_code > 0)
+			if exit_code == 1:
+				return True
+			if exit_code == 2:
+				print "Update cancelled"
+			return False
 		else:
 			print "Updater not found, skpping."
 	else:
