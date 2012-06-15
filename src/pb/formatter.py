@@ -64,7 +64,8 @@ class Formatter:
 	
 	def printCreateDataCenter(self, response):
 		self.out("Data center ID: %s", response["dataCenterId"])
-		self.out("Data center region: %s", response["region"])
+		region = response["region"] if "region" in response else "ProfitBricks"
+		self.out("Data center region: %s", region)
 	
 	def printCreateServer(self, response):
 		self.out("Server ID: %s", response["serverId"])
@@ -236,9 +237,10 @@ class Formatter:
 			self.printImage(i)
 	
 	def printDataCenter(self, dataCenter):
-		dc = self.requireArgs(dataCenter, ["dataCenterName", "provisioningState", "dataCenterVersion", "region"])
+		dc = self.requireArgs(dataCenter, ["dataCenterName", "provisioningState", "dataCenterVersion"])
+		region = dc["region"] if "region" in dc else "ProfitBricks"
 		if self.short:
-			self.out("Data center '%s' from %s is %s", dc["dataCenterName"], dc["region"], dc["provisioningState"])
+			self.out("Data center '%s' from %s is %s", dc["dataCenterName"], region, dc["provisioningState"])
 			self.out("Servers (%d):", len(dataCenter.servers) if "servers" in dataCenter else 0)
 			self.indent(1);
 			if "servers" in dataCenter:
@@ -267,7 +269,7 @@ class Formatter:
 			self.out()
 			self.out("Name: %s", dc["dataCenterName"])
 			self.out("Provisioning state: %s", dc["provisioningState"])
-			self.out("Region: %s", dc["region"])
+			self.out("Region: %s", region)
 			self.out("Version: %s", dc["dataCenterVersion"])
 			self.out()
 			self.out("Servers (%d):", len(dataCenter.servers) if "servers" in dataCenter else 0)
