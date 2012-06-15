@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-# v1.1 Copyright 2012 ProfitBricks GmbH
+# v1.1.1 Copyright 2012 ProfitBricks GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import pb.errorhandler
 
 class Shell:
 
-	version = '1.1'
+	version = '1.1.1'
 
 	cmds_internal = {}
 	cmds_api = pb.argsparser.ArgsParser().operations
@@ -40,7 +40,7 @@ class Shell:
 	treset = '\033[0;0m'
 
 	default_dc = None
-	wait = True
+	wait = False
 
 	def __init__(self):
 		this = self
@@ -66,7 +66,7 @@ class Shell:
 		pb.formatter.Formatter.out(pb.formatter.Formatter(), text)
 
 	def prompt(self):
-		return self.treset + self.tbold + ('ProfitBricks> ' if self.default_dc is None else self.default_dc + '> ') + self.treset
+		return self.treset + '-\n' + self.tbold + ('ProfitBricks> ' if self.default_dc is None else self.default_dc + '> ') + self.treset
 
 	def completer(self):
 		this = self
@@ -85,9 +85,10 @@ class Shell:
 		return inner_completer
 
 	def run_command(self, cmd, args):
-		if cmd == 'deleteDataCenter' and self.default_dc is not None:
-			self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
-			return
+		if cmd == 'deletedatacenter':
+			if self.default_dc is not None:
+				self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
+				return
 		args.insert(0, 'dummy') # equivalent of argv[0]
 		argsParser = pb.argsparser.ArgsParser()
 		pb.errorhandler.initializing += 1
@@ -116,6 +117,14 @@ class Shell:
 			self.out(ex.message);
 			return
 		
+		if cmd == 'deletedatacenter':
+			# check if datacenter is empty first (as per PB API 1.2 specs, clients should check if dc is empty before deleting)
+			apiResult = pb.argsparser.ArgsParser.operations['getDataCenter']['api'](api, argsParser.opArgs)
+			if ('servers' in apiResult and len(apiResult['servers']) > 0) or ('storages' in apiResult and len(apiResult['storages']) > 0) or ('loadBalancers' in apiResult and len(apiResult['loadBalancers']) > 0):
+				ans = raw_input('The data center is not empty! Do you want to continue? [y/N] ')
+				if ans[0:1].lower() != 'y':
+					return
+		
 		try:
 			apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
 		except Exception as ex:
@@ -126,22 +135,34 @@ class Shell:
 			pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
 		except Exception as ex:
 			self.out('ERROR: Internal error while printing response')
-			self.out('-');
 			return
 		
-		while self.wait and self.default_dc is not None:
+		self.waitOnce = argsParser.baseArgs["wait"] if ("wait" in argsParser.baseArgs and 'dcid' in argsParser.opArgs) else None
+		while (self.wait and (self.default_dc is not None) and self.waitOnce is None) or (self.waitOnce is not None and self.waitOnce):
 			try:
-				if self.default_dc_state(api) == 'AVAILABLE':
-					break
+				if (self.waitOnce is not None) and self.waitOnce:
+					try:
+						if api.getDataCenterState(argsParser.opArgs['dcid']) == 'AVAILABLE':
+							break
+					except:
+						# data center may no longer be available in case of deleteDataCenter command
+						break
+				else:
+					if api.getDataCenterState(self.default_dc) == 'AVAILABLE':
+						break
 			except Exception as ex:
 				self.out(ex.message)
 				break
 			sys.stdout.write('.')
 			sys.stdout.flush()
 			time.sleep(1)
+		self.waitOnce = None
 		if (self.wait):
 			self.out('\n')
-		self.out('-')
+		
+		# reload datacenters list
+		if cmd in ['createdatacenter', 'deletedatacenter']:
+			self.parse('get-all-datacenters')
 
 	def clean_cmd(self, cmd):
 		return cmd.replace('-', '').replace('@', '').lower();
@@ -163,12 +184,11 @@ class Shell:
 			args.insert(1, '-dcid')
 			args.insert(2, self.default_dc)
 		
-		# find command
+		# find and execute command if known to the API
+		clean_cmd = self.clean_cmd(cmd)
 		for c in self.cmds_api:
-			if self.clean_cmd(c) == self.clean_cmd(cmd):
-				self.run_command(c, args)
-				if self.clean_cmd(cmd) == 'createdatacenter':
-					self.parse('get-all-datacenters')
+			if self.clean_cmd(c) == clean_cmd:
+				self.run_command(clean_cmd, args)
 				return
 		
 		#spellcheck = pb.spellcheck.SpellCheck([i.lower() for i in self.cmds_api])
@@ -180,12 +200,7 @@ class Shell:
 		else:
 			self.out('Unknown command, interpreting "%s" as "%s"' % (cmd, match))
 			args[0] = match
-			if self.clean_cmd(match) == 'createdatacenter':
-				self.parse('get-all-datacenters')
 			self.run_command(self.clean_cmd(match), args)
-
-	def default_dc_state(self, api):
-		return api.getDataCenterState(self.default_dc)
 
 	def start(self):
 		readline.set_completer(self.completer())
