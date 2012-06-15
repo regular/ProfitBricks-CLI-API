@@ -31,39 +31,40 @@ class Formatter:
 		return result
 	
 	# Generic method, for many operations that don't give any response (except through HTTP, which is handled by ProfitBricks.API)
-	def operationCompleted(self, response):
-		self.out("Operation completed") # if you change this, remember to change it in test/test-pbapi.sh
+	def operationQueued(self, response):
+		self.out("Operation queued") # if you change this, remember to change it in test/test-pbapi.sh
 	
-	printClearDataCenter = operationCompleted
-	printUpdateDataCenter = operationCompleted
-	printRebootServer = operationCompleted
-	printDeleteDataCenter = operationCompleted
-	printUpdateServer = operationCompleted
-	printDeleteServer = operationCompleted
-	printDeleteStorage = operationCompleted
-	printConnectStorageToServer = operationCompleted
-	printDisconnectStorageFromServer = operationCompleted
-	printUpdateStorage = operationCompleted
-	printAddRomDriveToServer = operationCompleted
-	printRemoveRomDriveFromServer = operationCompleted
-	printSetImageOsType = operationCompleted
-	printDeleteImage = operationCompleted
-	printCreateNIC = operationCompleted
-	printEnableInternetAccess = operationCompleted
-	printDisableInternetAccess = operationCompleted
-	printUpdateNIC = operationCompleted
-	printDeleteNIC = operationCompleted
-	printAddPublicIPToNIC = operationCompleted
-	printRemovePublicIPFromNIC = operationCompleted
-	printReleasePublicIPBlock = operationCompleted
-	printDeleteLoadBalancer = operationCompleted
-	printDeregisterServersOnLoadBalancer = operationCompleted
-	printActivateLoadBalancingOnServers = operationCompleted
-	printDeactivateLoadBalancingOnServers = operationCompleted
-	printUpdateLoadBalancer = operationCompleted
+	printClearDataCenter = operationQueued
+	printUpdateDataCenter = operationQueued
+	printRebootServer = operationQueued
+	printDeleteDataCenter = operationQueued
+	printUpdateServer = operationQueued
+	printDeleteServer = operationQueued
+	printDeleteStorage = operationQueued
+	printConnectStorageToServer = operationQueued
+	printDisconnectStorageFromServer = operationQueued
+	printUpdateStorage = operationQueued
+	printAddRomDriveToServer = operationQueued
+	printRemoveRomDriveFromServer = operationQueued
+	printSetImageOsType = operationQueued
+	printDeleteImage = operationQueued
+	printCreateNIC = operationQueued
+	printEnableInternetAccess = operationQueued
+	printDisableInternetAccess = operationQueued
+	printUpdateNIC = operationQueued
+	printDeleteNIC = operationQueued
+	printAddPublicIPToNIC = operationQueued
+	printRemovePublicIPFromNIC = operationQueued
+	printReleasePublicIPBlock = operationQueued
+	printDeleteLoadBalancer = operationQueued
+	printDeregisterServersOnLoadBalancer = operationQueued
+	printActivateLoadBalancingOnServers = operationQueued
+	printDeactivateLoadBalancingOnServers = operationQueued
+	printUpdateLoadBalancer = operationQueued
 	
 	def printCreateDataCenter(self, response):
 		self.out("Data center ID: %s", response["dataCenterId"])
+		self.out("Data center region: %s", response["region"])
 	
 	def printCreateServer(self, response):
 		self.out("Server ID: %s", response["serverId"])
@@ -235,9 +236,9 @@ class Formatter:
 			self.printImage(i)
 	
 	def printDataCenter(self, dataCenter):
-		dc = self.requireArgs(dataCenter, ["dataCenterName", "provisioningState", "dataCenterVersion"])
+		dc = self.requireArgs(dataCenter, ["dataCenterName", "provisioningState", "dataCenterVersion", "region"])
 		if self.short:
-			self.out("Data center %s is %s", dc["dataCenterName"], dc["provisioningState"])
+			self.out("Data center '%s' from %s is %s", dc["dataCenterName"], dc["region"], dc["provisioningState"])
 			self.out("Servers (%d):", len(dataCenter.servers) if "servers" in dataCenter else 0)
 			self.indent(1);
 			if "servers" in dataCenter:
@@ -254,10 +255,19 @@ class Formatter:
 			else:
 				self.out("(none)")
 			self.indent(-1);
+			self.out("Load balancers (%d):", len(dataCenter.loadBalancers) if "loadBalancers" in dataCenter else 0)
+			self.indent(1);
+			if "loadBalancers" in dataCenter:
+				for loadBalancer in dataCenter.loadBalancers:
+					self.printServer(loadBalancer)
+			else:
+				self.out("(none)")
+			self.indent(-1);
 		else:
 			self.out()
 			self.out("Name: %s", dc["dataCenterName"])
 			self.out("Provisioning state: %s", dc["provisioningState"])
+			self.out("Region: %s", dc["region"])
 			self.out("Version: %s", dc["dataCenterVersion"])
 			self.out()
 			self.out("Servers (%d):", len(dataCenter.servers) if "servers" in dataCenter else 0)
@@ -274,6 +284,15 @@ class Formatter:
 			if "storages" in dataCenter:
 				for storage in dataCenter.storages:
 					self.printStorage(storage)
+			else:
+				self.out("(none)")
+			self.indent(-1);
+			self.out()
+			self.out("Load balancers (%d):", len(dataCenter.loadBalancers) if "loadBalancers" in dataCenter else 0)
+			self.indent(1);
+			if "loadBalancers" in dataCenter:
+				for loadBalancer in dataCenter.loadBalancers:
+					self.printServer(loadBalancer)
 			else:
 				self.out("(none)")
 			self.indent(-1);
