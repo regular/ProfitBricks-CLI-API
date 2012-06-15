@@ -24,7 +24,7 @@ class API:
 		try:
 			self.client = suds.client.Client(url = self.url, username = username, password = password)
 		except suds.transport.TransportError as (err):
-			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Error: Unknown error: %s" % str(err.message))
+			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Unknown init error: %s" % str(err.message))
 	
 	# Calls the func() function using SOAP and the given arguments list (must always be an array)
 	def __call(self, func, args):
@@ -44,7 +44,7 @@ class API:
 		except suds.WebFault as (err):
 			raise Exception("Error: %s" % str(err.message))
 		except suds.transport.TransportError as (err):
-			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Error: Unknown error: %s" % str(err.message))
+			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Unknown transport error: %s" % str(err.message))
 	
 	# Returns the userArgs hash, but replaces the keys with the values found in translation and only the ones found in translation
 	# eg, __parseArgs({"a": 10, "b": 20, "c": 30}, {"a": "a", "b": "B"}) => {"a": 10, "B": 20}
@@ -64,8 +64,8 @@ class API:
 	def getServer(self, id):
 		return self.__call("getServer", [id])
 	
-	def createDataCenter(self, name):
-		return self.__call("createDataCenter", [name])
+	def createDataCenter(self, name, region):
+		return self.__call("createDataCenter", [name, region.upper()])
 	
 	def getDataCenterState(self, id):
 		return self.__call("getDataCenterState", [id])
