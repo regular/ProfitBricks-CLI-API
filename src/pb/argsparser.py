@@ -51,6 +51,10 @@ class ArgsParser:
 				self.baseArgs["debug"] = True
 			elif arg.lower() == "-s":
 				self.baseArgs["s"] = True
+			elif arg.lower() == "-wait":
+				self.baseArgs["wait"] = True
+			elif arg.lower() == "-nowait":
+				self.baseArgs["wait"] = False
 			elif arg.lower() == "-f":
 				if i == len(argv) - 1:
 					errorhandler.ArgsError("Missing output format")
@@ -96,7 +100,7 @@ class ArgsParser:
 	operations = {
 			"createDataCenter": {
 				"args": ["name"],
-				"api": lambda api, opArgs: api.createDataCenter(opArgs["name"]),
+				"api": lambda api, opArgs: api.createDataCenter(opArgs["name"], opArgs["region"] if "region" in opArgs else ""),
 				"out": lambda formatter, result: formatter.printCreateDataCenter(result)
 			},
 			"getDataCenter": {
