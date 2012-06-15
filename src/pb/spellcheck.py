@@ -1,5 +1,8 @@
 import difflib
 
+# Not used because it doesn't work in Python 2.4
+# Will be fixed until PB API CLI v1.2.2 is released
+
 class SpellCheck:
 	
 	def __init__(self, words = []):
