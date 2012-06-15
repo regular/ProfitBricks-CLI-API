@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-# v1.2 Copyright 2012 ProfitBricks GmbH
+# v1.2.0 Copyright 2012 ProfitBricks GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
+#
+# EXAMPLE FILE FOR PROFITBRICKS CUSOMTERS AND DEVELOPERS
+#
+# This file is an example showing you how to use the ProfitBricks API
+# from Python. Copy the 'pb/api.py' file in your working directory,
+# import it in your app (import api) and follow the examples shown
+# below. If you still need help, contact support@profitbricks.com
 #
 
 import pb.api

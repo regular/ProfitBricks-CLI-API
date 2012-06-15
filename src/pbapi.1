@@ -19,7 +19,7 @@
 .\" NAME
 .Sh NAME
 .Nm pbapi.py
-.Nd ProfitBricks API tools v1.2
+.Nd ProfitBricks API tools v1.2.0
 .\" SYNOPSYS
 .Sh SYNOPSYS
 .Nm
@@ -118,7 +118,7 @@ The name of the newly created Data Center. Cannot contain \@, \\, /, |, ", or \'
 The geographical region in which to create the new Data Center, may be: EUROPE, NORTH_AMERICA, or DEFAULT (API v1.2)
 .El
 .It Ar get-data-center
-Returns information about the Data Center:
+Displays information about the Data Center:
 .Bl -tag -width Ds
 .It data center name
 Name of the Virtual Data Center.
@@ -134,9 +134,9 @@ A list of Virtual Storages contained by the Virtual Data Center.
 Version of the Virtual Data Center.
 .El
 .It Ar get-data-center-state
-Returns the data center provisioning state (INACTIVE, INPROCESS, AVAILABLE, DELETED).
+Displays the data center provisioning state (INACTIVE, INPROCESS, AVAILABLE, DELETED).
 .It Ar get-all-datacenters
-Returns a list of all data centers created by the current user.
+Displays a list of all data centers created by the current user.
 .Bl -tag -width Ds
 .It id
 The unique identifier of the Virtual Data Center.
@@ -194,7 +194,7 @@ will be connected to the Internet.
 Sets the OS type of the server (WINDOWS, OTHER). If left empty, the server will inherit the OS Type of its selected boot image / storage.
 .El
 .It Ar get-server
-Returns the following information about the server:
+Displays the following information about the server:
 .Bl -tag -width Ds
 .It server name
 The name of the Virtual Server.
@@ -277,7 +277,7 @@ Name for the virtual storage.
 The ID of a virtual image to be assigned to the newly created virtual storage.
 .El
 .It Ar get-storage
-Return information about the virtual storage:
+Displays information about the virtual storage:
 .Bl -tag -width Ds
 .It storage name
 The name of the virtual storage.
@@ -345,7 +345,7 @@ The
 may be:
 .Bl -tag -width Ds
 .It Ar add-rom-drive-to-server
-Adds a CD/DVD-ROM drive to an existing virtual server. Maximum CD/DVD-ROM drives are currently 2 (API v1.2).
+Adds a CD/DVD-ROM drive to an existing virtual server. Maximum CD/DVD-ROM drives are currently 2 (API v1.1).
 .Bl -tag -width Ds
 .It Op Fl devnum Ar deviceNumber
 Device number of the CD/DVD-ROM drive connected to the server. If no device number is set, a new device number will be assigned to the CD/DVD-ROM drive automatically.
@@ -378,7 +378,7 @@ Identifier of the target HDD or CD/DVD-ROM image.
 Operating system type of the target image (WINDOWS, OTHER).
 .El
 .It Ar get-image
-Returns information about the HDD or CD/DVD-ROM (ISO) image.
+Displays information about the HDD or CD/DVD-ROM (ISO) image.
 .Bl -tag -width Ds
 .It Fl imgid Ar imageId
 Identifier of the target image.
@@ -415,7 +415,7 @@ Public/private IP address.
 Name of the new NIC.
 .El
 .It Ar get-nic
-Returns information about the state and configuration of an existing NIC.
+Displays information about the state and configuration of an existing NIC.
 .Bl -tag -width Ds
 .It Fl nicid Ar nicId
 Identifier of the target NIC.
@@ -476,7 +476,7 @@ Reserved IP.
 Identifier of the target NIC.
 .El
 .It Ar get-all-public-ip-blocks
-Returns a list of all public IP blocks reserved by the user, including the reserved IPs and connected NICs.
+Displays a list of all public IP blocks reserved by the user, including the reserved IPs and connected NICs.
 .It Ar remove-public-ip-from-nic
 Removes a reserved public IP from a NIC. This operation is required when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.
 .Bl -tag -width Ds
@@ -516,14 +516,14 @@ Creates a virtual load balancer within an existing data center.
 .It Op Fl name Ar loadBalancerName
 Names the load balancer to be created.
 .It Op Fl algo Ar loadBalancerAlgorithm
-Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.2).
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (API v1.1).
 .It Op Fl ip Ar ip
 A DHCP IP address is being assigned to the load balancer automatically by ProfitBricks. A private IP can be simply defined by the user. Additional, public IPs can be reserved and assigned to the load balancer manually. (see reservePublicIpBlock)
 .It Op Fl srvId Ar serverIds
 List of server ids, separated by commas (abcd-efgh-ijkl,0123-456-789,000-000-000)
 .El
 .It Ar get-load-balancer
-Returns information about a virtual load balancer.
+Displays information about a virtual load balancer.
 .It Ar update-load-balancer
 .Bl -tag -width Ds
 .It Fl bid Ar loadBalancerId
@@ -531,7 +531,7 @@ Identifier of the load balancer.
 .It Op Fl name Ar loadBalancerName
 Renames the virtual load balancer.
 .It Op Fl algo Ar loadBalancerAlgorithm
-Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (ProfitBricks Customer API v1.2).
+Load balancer algorithm. ROUND_ROBIN is default and the only supported algorithm at the moment (API v1.1).
 .It Op Fl ip Ar ip
 Updates the load balancer with the specified IP. All servers connected to the load balancer will have their primary IP address updated with the same IP address of the load balancer implicitly. Additional customer reserved IP addresses, which have been added to the server's NIC, remain unchanged. Leave empty to reset the IP of the load balancer with a ProfitBricks assigned IP address.
 .El

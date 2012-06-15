@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-# v1.2 Copyright 2012 ProfitBricks GmbH
+# v1.2.0 Copyright 2012 ProfitBricks GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import pb.errorhandler
 
 class Shell:
 
-	version = '1.2'
+	version = '1.2.0'
 
 	cmds_internal = {}
 	cmds_api = pb.argsparser.ArgsParser().operations
@@ -40,7 +40,7 @@ class Shell:
 	treset = '\033[0;0m'
 
 	default_dc = None
-	wait = False
+	wait = True
 
 	def __init__(self):
 		this = self
