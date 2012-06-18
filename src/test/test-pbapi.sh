@@ -5,8 +5,10 @@ pause=""
 ( echo "$@" | grep -e "-debug" >/dev/null ) && debug="-debug"
 ( echo "$@" | grep -e "-pause" >/dev/null ) && pause="-pause"
 
+api_dir="$(dirname $(readlink -f $0))/.."
+
 function api() {
-	../src/pbapi.py ${debug} "$@" | grep -v 'Request ID'
+	${api_dir}/pbapi.py ${debug} "$@" | grep -v 'Request ID'
 	exit_code=$?
 	if [ -n "${dc_id}" ]; then
 		cmd="eval ../src/pbapi.py ${debug} get-datacenter-state -dcid ${dc_id} | grep 'AVAILABLE' 2>&1 >/dev/null ; echo \$?"
@@ -93,10 +95,9 @@ default_dc_name="${name_key}-dc"
 default_srv_name="${name_key}-srv"
 default_sto_name="${name_key}-sto"
 
-success="Operation completed" # do not change this unless it is also changed in src/pb/formatter.py
-
 ## HELPERS ##
 
+success="Operation completed" # do not change this unless it is also changed in src/pb/formatter.py
 default_dc_region="NORTH_AMERICA" # must be written exactly as set by createDataCenter and returned by getDataCenter
 
 ### ENABLED TESTS ###

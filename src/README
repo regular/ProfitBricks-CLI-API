@@ -1,0 +1,11 @@
+pb - directory containing the pb module, a directory containing the ProfitBricks API manipulation code and helpers
+test - test files for the PB API *WHICH YOU SHOULD NEVER RUN UNLESS YOU KNOW EXACTLY WHAT YOU'RE DOING!*
+example.py - shows you how to create your own PB API tools in Python (all you need to do is import pb/api.py)
+pbapi.1 - the man page (use man -l pbapi.1 in Linux to read it)
+pbapi.py - executes API commands on the ProfitBricks servers using the pb module, call this from your own (bash, perl, etc.) scripts
+pbcli.py - same as pbapi.py, but has its own console; suitable for human interaction, useless for scripting
+pbquery.py - may be missing, under development, will provide a way to customize the API output format (eg, ./pbquery.py ... -f 'the server %server.name is %server.status')
+update.sh - update script that tries to use git (if exists) to update the application before every run
+
+support@profitbricks.com
+
