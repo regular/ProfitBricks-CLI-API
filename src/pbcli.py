@@ -40,7 +40,7 @@ class Shell:
 	treset = '\033[0;0m'
 
 	default_dc = None
-	wait = True
+	wait = False
 
 	def __init__(self):
 		this = self

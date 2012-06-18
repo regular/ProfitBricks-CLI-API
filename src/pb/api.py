@@ -7,7 +7,7 @@ from suds.transport import Request
 
 class API:
 	
-	url = "https://api.profitbricks.com/1.1/wsdl"
+	url = "https://api.profitbricks.com/1.2/wsdl"
 	debug = False
 	requestId = None
 	datacenters = []
