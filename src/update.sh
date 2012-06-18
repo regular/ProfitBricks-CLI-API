@@ -30,7 +30,6 @@ if [ "$git_dir" != "" ]; then # we have a ".git" directory
 		echo "$git_output" | grep 'files changed' | grep 'insertions' | grep 'deletions'
 		if [ "$?" -eq "0" ]; then
 			exit_code=1 # exit code 1 means we've updated, exit code 2 means we've cancelled; exit code 2 triggers when user presses Ctrl+C
-			rm -rf "test" >/dev/null
 			echo -e "\n# WARNING: Please review the license file before continuing. The terms and conditions may have changed since the last update!\n"
 		else
 			echo "Already up-to-date."
