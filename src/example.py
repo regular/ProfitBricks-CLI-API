@@ -40,7 +40,7 @@ if username == '' or password == '':
 try:
 	api = pb.api.API(username, password)
 except Exception as e:
-	print 'Error connecting to ProfitBricks: %s' % e.message
+	print 'Error connecting to ProfitBricks: %s' % str(e)
 	sys.exit(2)
 print 'We have connected to the ProfitBricks API'
 

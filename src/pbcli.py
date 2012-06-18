@@ -114,7 +114,7 @@ class Shell:
 		try:
 			api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
 		except Exception as ex:
-			self.out(ex.message);
+			self.out(str(ex));
 			return
 		
 		if cmd == 'deletedatacenter':
@@ -128,7 +128,7 @@ class Shell:
 		try:
 			apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
 		except Exception as ex:
-			self.out(ex.message);
+			self.out(str(ex));
 			return
 		
 		try:
@@ -151,7 +151,7 @@ class Shell:
 					if api.getDataCenterState(self.default_dc) == 'AVAILABLE':
 						break
 			except Exception as ex:
-				self.out(ex.message)
+				self.out(str(ex))
 				break
 			sys.stdout.write('.')
 			sys.stdout.flush()

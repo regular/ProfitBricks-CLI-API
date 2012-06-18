@@ -65,5 +65,5 @@ try:
 		print ""
 		print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
 except Exception as e:
-	print 'Error: %s' % e.message
+	print 'Error: %s' % str(e)
 
