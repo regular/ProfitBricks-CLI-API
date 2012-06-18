@@ -7,7 +7,7 @@ from suds.transport import Request
 
 class API:
 	
-	url = "https://api.profitbricks.com/1.2/wsdl"
+	url = "https://api.profitbricks.com/1.1/wsdl"
 	debug = False
 	requestId = None
 	datacenters = []
@@ -20,7 +20,7 @@ class API:
 			logging.getLogger("suds.transport").setLevel(logging.DEBUG)
 		else:
 			logging.getLogger('suds.client').setLevel(logging.CRITICAL) # hide soap faults
-
+		
 		try:
 			self.client = suds.client.Client(url = self.url, username = username, password = password)
 		except suds.transport.TransportError as (err):
