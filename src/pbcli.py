@@ -105,7 +105,7 @@ class Shell:
 			pb.argsparser.ArgsParser.operations[requestedOp]['api'](helper)
 			return
 		if not argsParser.isAuthenticated():
-			self.out('Missing authentication')
+			self.out('Authentication error: Missing authentication')
 			return
 		formatter = pb.formatter.Formatter()
 		if argsParser.baseArgs['s']:

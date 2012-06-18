@@ -51,7 +51,7 @@ if requestedOp[0] == "@":
 # perform regular (non-@) operation
 
 if not argsParser.isAuthenticated():
-	pb.errorhandler.ArgsError("Missing authentication")
+	pb.errorhandler.ArgsError("Authentication error: Missing authentication")
 
 formatter = pb.formatter.Formatter()
 if argsParser.baseArgs["s"]:
