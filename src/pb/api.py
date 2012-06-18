@@ -7,7 +7,7 @@ from suds.transport import Request
 
 class API:
 	
-	url = "https://api.profitbricks.com/1.1/wsdl"
+	url = "https://api.profitbricks.com/1.2/wsdl"
 	debug = False
 	requestId = None
 	datacenters = []
@@ -24,7 +24,7 @@ class API:
 		try:
 			self.client = suds.client.Client(url = self.url, username = username, password = password)
 		except suds.transport.TransportError as (err):
-			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Unknown init error: %s" % str(err.message))
+			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Unknown initialization error: %s" % str(err))
 	
 	# Calls the func() function using SOAP and the given arguments list (must always be an array)
 	def __call(self, func, args):
@@ -42,9 +42,9 @@ class API:
 				API.datacenters = result
 			return result
 		except suds.WebFault as (err):
-			raise Exception("Error: %s" % str(err.message))
+			raise Exception("Web error: %s" % str(err))
 		except suds.transport.TransportError as (err):
-			raise Exception("Error: Invalid username or password" if err.httpcode == 401 else "Unknown transport error: %s" % str(err.message))
+			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Transport error: %s" % str(err))
 	
 	# Returns the userArgs hash, but replaces the keys with the values found in translation and only the ones found in translation
 	# eg, __parseArgs({"a": 10, "b": 20, "c": 30}, {"a": "a", "b": "B"}) => {"a": 10, "B": 20}
