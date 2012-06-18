@@ -225,7 +225,8 @@ class Shell:
 	def do_help(self):
 		self.do_about()
 		if platform.system() == 'Linux':
-			os.system('man -l pbapi.1')
+			manfile = os.path.dirname(__file__) + '/pbapi.1'
+			os.system('man -l ' + manfile)
 		else:
 			self.out('')
 			self.out('Unknown operating system. If your operating system can read Unix manual pages, open the file \'pbapi.1\'.')
