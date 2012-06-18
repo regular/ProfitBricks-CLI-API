@@ -277,9 +277,10 @@ def auth_update():
 	print "Checking for updates: ",
 	system=platform.system()
 	if system == 'Linux':
-		if os.path.isfile('./update.sh'):
+		updater = os.path.dirname(__file__) + '/update.sh'
+		if os.path.isfile(updater):
 			sys.stdout.flush()
-			exit_code = os.system('./update.sh')
+			exit_code = os.system(updater)
 			if exit_code == 1:
 				return True
 			if exit_code == 2:

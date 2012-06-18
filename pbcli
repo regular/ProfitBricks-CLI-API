@@ -14,7 +14,5 @@ elif [ -f "${my_dir}/src/default.auth" ]; then auth_args="-auth ${my_dir}/src/de
 fi
 
 # Launch src/pbcli.py
-cd ${my_dir}/src
-./pbcli.py ${auth_args} ${my_args}
-cd ${user_dir}
+"${my_dir}/src/pbcli.py" ${auth_args} ${my_args}
 
