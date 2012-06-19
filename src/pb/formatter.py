@@ -64,8 +64,7 @@ class Formatter:
 	
 	def printCreateDataCenter(self, response):
 		self.out("Data center ID: %s", response["dataCenterId"])
-		region = response["region"] if "region" in response else "ProfitBricks"
-		self.out("Data center region: %s", region)
+		self.out("Data center region: %s", response["region"])
 	
 	def printCreateServer(self, response):
 		self.out("Server ID: %s", response["serverId"])
@@ -107,7 +106,7 @@ class Formatter:
 			self.out("MAC Address: %s", nic["macAddress"])
 	
 	def printServer(self, server):
-		srv = self.requireArgs(server, ["serverName", "serverId", "creationTime", "lastModificationTime", "provisioningState", "virtualMachineState", "ram", "cores", "osType"])
+		srv = self.requireArgs(server, ["serverName", "serverId", "creationTime", "lastModificationTime", "provisioningState", "virtualMachineState", "ram", "cores", "osType", "availabilityZone"])
 		if self.short:
 			self.out("%s => %s is %s and %s", srv["serverName"], srv["serverId"], srv["provisioningState"], srv["virtualMachineState"])
 			self.indent(1)
@@ -125,6 +124,7 @@ class Formatter:
 			self.out("Virtual machine state: %s", srv["virtualMachineState"])
 			self.out("Cores: %s", srv["cores"])
 			self.out("RAM: %s MiB", srv["ram"])
+			self.out("Availability zone: %s", srv["availabilityZone"])
 			self.out("Internet access: %s", "yes" if server["internetAccess"] else "no")
 			self.out("Operating system: %s", srv["osType"])
 			self.out("IP Addresses: %s", (" ; ".join(server.ips)) if "ips" in server else "(none)")
@@ -212,21 +212,21 @@ class Formatter:
 	
 	def _printImage(self, image): # the other method is too much for printStorage
 		if self.short:
-			self.out("Image %s in %s: %s", image["imageId"], image["region"], image["imageName"])
+			self.out("Image %s in %s: %s", image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION", image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
-			self.out("Region: %s", image["region"])
+			self.out("Region: %s", image["region"] if "region" in image else "UNKNOWN_REGION")
 	
 	def printImage(self, image):
 		if self.short:
-			self.out("Image %s in %s: %s", image["imageId"], image["region"], image["imageName"])
+			self.out("Image %s in %s: %s", image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION", image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
-			self.out("Region: %s", image["region"])
+			self.out("Region: %s", image["region"] if "region" in image else "UNKNOWN_REGION")
 			self.out("Type: %s", image["imageType"])
 			self.out("Writable: %s", "yes" if image["writeable"] else "nno")
 			self.out("CPU hot plugging: %s", "yes" if image["cpuHotpluggable"] else "no")
@@ -262,7 +262,7 @@ class Formatter:
 			self.indent(1);
 			if "loadBalancers" in dataCenter:
 				for loadBalancer in dataCenter.loadBalancers:
-					self.printServer(loadBalancer)
+					self.printLoadBalancer(loadBalancer)
 			else:
 				self.out("(none)")
 			self.indent(-1);

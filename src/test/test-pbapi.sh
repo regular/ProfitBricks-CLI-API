@@ -8,10 +8,11 @@ pause=""
 api_dir="$(dirname $(readlink -f $0))/.."
 
 function api() {
+	echo "# API: $@" >&2
 	${api_dir}/pbapi.py ${debug} "$@" | grep -v 'Request ID'
 	exit_code=$?
 	if [ -n "${dc_id}" ]; then
-		cmd="eval ../src/pbapi.py ${debug} get-datacenter-state -dcid ${dc_id} | grep 'AVAILABLE' 2>&1 >/dev/null ; echo \$?"
+		cmd="eval ${api_dir}/pbapi.py ${debug} get-datacenter-state -dcid ${dc_id} | grep 'AVAILABLE' 2>&1 >/dev/null ; echo \$?"
 		while [ "$(${cmd})" != "0" ]; do
 			sleep 2
 		done
@@ -97,8 +98,8 @@ default_sto_name="${name_key}-sto"
 
 ## HELPERS ##
 
-success="Operation completed" # do not change this unless it is also changed in src/pb/formatter.py
-default_dc_region="NORTH_AMERICA" # must be written exactly as set by createDataCenter and returned by getDataCenter
+success="queued" # do not change this unless it is also changed in src/pb/formatter.py
+default_dc_region="EUROPE" # must be written exactly as set by createDataCenter and returned by getDataCenter
 
 ### ENABLED TESTS ###
 

@@ -86,13 +86,19 @@ class API:
 			args["osType"] = userArgs["ostype"].upper()
 		if "internetaccess" in userArgs:
 			args["internetAccess"] = (userArgs["internetaccess"][:1].lower() == "y")
+		if "zone" in userArgs:
+			args["availabilityZone"] = userArgs["zone"].upper()
 		return self.__call("createServer", [args])
 	
 	def rebootServer(self, id):
 		return self.__call("rebootServer", [id])
 	
 	def updateServer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"srvid": "serverId", "name": "serverName", "cores": "cores", "ram": "ram", "bootFromImageId": "bootFromImageId", "bootFromStorageId": "bootFromStorageId", "osType": "osType"})
+		args = self.__parseArgs(userArgs, {"srvid": "serverId", "name": "serverName", "cores": "cores", "ram": "ram", "bootFromImageId": "bootFromImageId", "bootFromStorageId": "bootFromStorageId"})
+		if "ostype" in userArgs:
+			args["osType"] = userArgs["ostype"].upper()
+		if "zone" in userArgs:
+			args["availabilityZone"] = userArgs["zone"].upper()
 		return self.__call("updateServer", [args])
 	
 	def deleteServer(self, id):

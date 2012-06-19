@@ -192,6 +192,8 @@ If set to "y", the specified
 will be connected to the Internet.
 .It Op Fl osType Ar osType
 Sets the OS type of the server (WINDOWS, OTHER). If left empty, the server will inherit the OS Type of its selected boot image / storage.
+.It Op Fl zone Ar availabilityZone
+Selects the physical zone in which the server is going to be created (API v1.2: AUTO, ZONE_1, ZONE_2), AUTO=random
 .El
 .It Ar get-server
 Displays the following information about the server:
@@ -227,6 +229,8 @@ and
 .Ar imageName .
 .It os type
 Operating system type (WINDOWS, OTHER, UNKNOWN).
+.It availabiilty zone
+The zone in which the server was created. Servers from different zones are located in different physical locations.
 .El
 .It Ar reboot-server
 Reboots an existing Virtual Server (POWER CYCLE).
@@ -245,6 +249,8 @@ Defines an existing CD/DVD image ID to be set as boot device for the server. It 
 Defines an existing storage device ID to be set as boot device of the server. The storage will be connected to the server implicitly.
 .It Op Fl osType Ar osType
 Updates the OS type of the server (WINDOWS, OTHER). If left empty, the server will inherit the OS Type of its selected boot image / storage.
+.It Op Fl zone Ar availabilityZone
+Selects the physical zone in which the server is going to be created (API v1.2: AUTO, ZONE_1, ZONE_2), AUTO=random
 .El
 .It Ar delete-server
 Deletes an existing virtual server.
