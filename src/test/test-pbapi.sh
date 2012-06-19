@@ -104,8 +104,8 @@ default_dc_region="EUROPE" # must be written exactly as set by createDataCenter 
 ### ENABLED TESTS ###
 
 test_data_center="1"
-test_virtual_server="0"
-test_storage="0"
+test_virtual_server="1"
+test_storage="1"
 
 ### DATA CENTER ###
 

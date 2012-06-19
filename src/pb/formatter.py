@@ -210,23 +210,22 @@ class Formatter:
 		else:
 			sel.out("ERROR")
 	
-	def _printImage(self, image): # the other method is too much for printStorage
+	def _printImage(self, image): # this is used by printStorage()
 		if self.short:
-			self.out("Image %s in %s: %s", image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION", image["imageName"])
+			self.out("Image %s: %s", image["imageId"], image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
-			self.out("Region: %s", image["region"] if "region" in image else "UNKNOWN_REGION")
 	
-	def printImage(self, image):
+	def printImage(self, image): # used by all except printStorage()
 		if self.short:
 			self.out("Image %s in %s: %s", image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION", image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
-			self.out("Region: %s", image["region"] if "region" in image else "UNKNOWN_REGION")
+			self.out("Region: %s", image["region"])
 			self.out("Type: %s", image["imageType"])
 			self.out("Writable: %s", "yes" if image["writeable"] else "nno")
 			self.out("CPU hot plugging: %s", "yes" if image["cpuHotpluggable"] else "no")
