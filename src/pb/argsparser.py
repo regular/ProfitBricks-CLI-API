@@ -100,7 +100,7 @@ class ArgsParser:
 	operations = {
 			"createDataCenter": {
 				"args": ["name"],
-				"api": lambda api, opArgs: api.createDataCenter(opArgs["name"], opArgs["region"] if "region" in opArgs else ""),
+				"api": lambda api, opArgs: api.createDataCenter(opArgs["name"], opArgs["region"] if "region" in opArgs else "DEFAULT"),
 				"out": lambda formatter, result: formatter.printCreateDataCenter(result)
 			},
 			"getDataCenter": {
@@ -290,7 +290,7 @@ class ArgsParser:
 			},
 			"reservePublicIpBlock": {
 				"args": ["size"],
-				"api": lambda api, opArgs: api.reservePublicIPBlock(opArgs["size"]),
+				"api": lambda api, opArgs: api.reservePublicIPBlock(opArgs["size"], opArgs["region"] if "region" in opArgs else "DEFAULT"),
 				"out": lambda formatter, result: formatter.printPublicIPBlock(result)
 			},
 			"addPublicIpToNic": {

@@ -210,21 +210,23 @@ class Formatter:
 		else:
 			sel.out("ERROR")
 	
-	def _printImage(self, image): # need to test whether to use this or other method
+	def _printImage(self, image): # the other method is too much for printStorage
 		if self.short:
-			self.out("Image %s (%s)", image["imageName"], image["imageId"])
+			self.out("Image %s in %s: %s", image["imageId"], image["region"], image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
+			self.out("Region: %s", image["region"])
 	
 	def printImage(self, image):
 		if self.short:
-			self.out("Image %s (%s)", image["imageName"], image["imageId"])
+			self.out("Image %s in %s: %s", image["imageId"], image["region"], image["imageName"])
 		else:
 			self.out()
 			self.out("Name: %s", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
+			self.out("Region: %s", image["region"])
 			self.out("Type: %s", image["imageType"])
 			self.out("Writable: %s", "yes" if image["writeable"] else "nno")
 			self.out("CPU hot plugging: %s", "yes" if image["cpuHotpluggable"] else "no")
@@ -300,18 +302,19 @@ class Formatter:
 	
 	def printPublicIPBlock(self, ipBlock):
 		if not self.short:
-			self.out("IP Block %s: %s", ipBlock["blockId"], " ; ".join(ipBlock["ips"]))
+			self.out("IP Block %s in %s: %s", ipBlock["blockId"], ipBlock["region"], " ; ".join(ipBlock["ips"]))
 		else:
 			self.out()
 			self.out("Block ID: %s", ipBlock["blockId"])
 			self.out("IP addresses: %s", " ; ".join(ipBlock["ips"]))
+			self.out("Region: %s", ipBlock["region"])
 	
 	def printGetAllPublicIPBlocks(self, blockList):
 		for ipBlock in blockList:
 			ips = []
 			for ipObj in ipBlock.publicIps:
 				ips.append(ipObj.ip)
-			self.printPublicIPBlock({"blockId": ipBlock.blockId, "ips": ips})
+			self.printPublicIPBlock({"blockId": ipBlock.blockId, "region": ipBlock.region, "ips": ips})
 	
 	def printAddFirewallRule(self, response):
 		self.out("Firewall ID: %s", response.firewallId)

@@ -466,6 +466,8 @@ Reserves a specified amount of public IPs which can be manually assigned to a NI
 .Bl -tag -width Ds
 .It Fl size Ar blockSize
 Block size / amount of IPs to reserve.
+.It Op Fl region Ar region
+The geographical region in which to allocate the IP block, may be: EUROPE, NORTH_AMERICA, or DEFAULT (API v1.2)
 .El
 .It Ar add-public-ip-to-nic
 Adds an existing reserved public IP to a NIC. This operation is required when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.

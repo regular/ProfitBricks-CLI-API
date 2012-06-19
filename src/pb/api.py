@@ -191,8 +191,8 @@ class API:
 	def deleteNIC(self, id):
 		return self.__call("deleteNic", [id])
 	
-	def reservePublicIPBlock(self, size):
-		return self.__call("reservePublicIpBlock", [size])
+	def reservePublicIPBlock(self, size, region):
+		return self.__call("reservePublicIpBlock", [size, region.upper()])
 	
 	def addPublicIPToNIC(self, ip, nicId):
 		return self.__call("addPublicIpToNic", [ip, nicId])
