@@ -218,7 +218,7 @@ class API:
 		if "proto" in userRule:
 			rule["protocol"] = userRule["proto"].upper()
 		if "port" in userRule:
-			ports = userRule["port"].split(":")
+			ports = userRule["port"].split("-")
 			rule["portRangeStart"] = ports[0]
 			rule["portRangeEnd"] = ports[len(ports) - 1]
 		return rule
