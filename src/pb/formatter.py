@@ -187,6 +187,10 @@ class Formatter:
 			self.out("(none)")
 		self.indent(-1)
 	
+	def printFirewall(self, firewall):
+		#self.out("== TO DO ==")
+		pass
+	
 	def _printBalancedServer(self, srv):
 		# it may be "active" instead of "activate", but the documentation specifies it is "activate"
 		if self.short:

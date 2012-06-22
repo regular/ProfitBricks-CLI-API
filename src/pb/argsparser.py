@@ -154,7 +154,7 @@ class ArgsParser:
 			"updateServer": {
 				"args": ["srvid"],
 				"api": lambda api, opArgs: api.updateServer(opArgs),
-				"out": lambda formatter, result: formatter.printDataCenter(result)
+				"out": lambda formatter, result: formatter.printUpdateServer(result)
 			},
 			"deleteServer": {
 				"args": ["srvid"],
