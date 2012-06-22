@@ -1,5 +1,3 @@
-import errorhandler
-
 class Formatter:
 	
 	indentValue = 0
@@ -89,15 +87,10 @@ class Formatter:
 	def printNIC(self, apiNIC):
 		nic = self.requireArgs(apiNIC, ["nicName", "nicId", "lanId", "macAddress", "serverId"])
 		if self.short:
-			self.out("NIC %s (%s mac %s on server %s) => %s",\
-				nic["nicName"],\
-				"inet" if apiNIC["internetAccess"] else "priv",\
-				nic["macAddress"],\
-				nic["serverId"],\
-				" ; ".join(apiNIC["ips"]) if "ips" in apiNIC else "(no IPs)")
+			self.out("NIC '%s' (%s MAC %s on server %s) => %s", nic["nicName"], "inet" if apiNIC["internetAccess"] else "priv", nic["macAddress"], nic["serverId"], " ; ".join(apiNIC["ips"]) if "ips" in apiNIC else "(no IPs)")
 		else:
 			self.out()
-			self.out("Name: %s", nic["nicName"])
+			self.out("Name: '%s'", nic["nicName"])
 			self.out("NIC ID: %s", nic["nicId"])
 			self.out("LAN ID: %s", nic["lanId"])
 			self.out("Server ID: %s", nic["serverId"])
@@ -108,7 +101,7 @@ class Formatter:
 	def printServer(self, server):
 		srv = self.requireArgs(server, ["serverName", "serverId", "creationTime", "lastModificationTime", "provisioningState", "virtualMachineState", "ram", "cores", "osType", "availabilityZone"])
 		if self.short:
-			self.out("%s => %s is %s and %s", srv["serverName"], srv["serverId"], srv["provisioningState"], srv["virtualMachineState"])
+			self.out("'%s' => %s is %s and %s", srv["serverName"], srv["serverId"], srv["provisioningState"], srv["virtualMachineState"])
 			self.indent(1)
 			self.out("%s Cores ; %s MiB RAM ; OS: %s ; Internet access [%s]", srv["cores"], srv["ram"], srv["osType"], "yes" if server["internetAccess"] else "no")
 			if "nics" in server:
@@ -117,7 +110,7 @@ class Formatter:
 			self.indent(-1)
 		else:
 			self.out()
-			self.out("Name: %s", srv["serverName"])
+			self.out("Name: '%s'", srv["serverName"])
 			self.out("Server ID: %s", srv["serverId"])
 			self.out("Created: [%s] Modified: [%s]", srv["creationTime"], srv["lastModificationTime"])
 			self.out("Provisioning state: %s", srv["provisioningState"])
@@ -137,18 +130,18 @@ class Formatter:
 	def printStorage(self, storage):
 		st = self.requireArgs(storage, ["storageName", "storageId", "provisioningState", "size", "osType"])
 		if self.short:
-			self.out("%s => %s is %s", st["storageName"], st["storageId"], st["provisioningState"])
+			self.out("'%s' => %s is %s", st["storageName"], st["storageId"], st["provisioningState"])
 			self.indent(1)
 			self.out("Size: %s GiB", st["size"])
 			self.out("Connected to VM ID: %s", (" ; ".join(storage.serverIds)) if "serverIds" in storage else "(none)")
 			if "mountImage" in storage:
-				self._printImage(storage.mountImage)
+				self._printStorageImage(storage.mountImage)
 			else:
 				self.out("(none)")
 			self.indent(-1)
 		else:
 			self.out()
-			self.out("Name: %s", st["storageName"])
+			self.out("Name: '%s'", st["storageName"])
 			self.out("Storage ID: %s", st["storageId"])
 			self.out("Size: %s GiB", st["size"])
 			self.out("Connected to Virtual Servers: %s", (" ; ".join(storage.serverIds)) if "serverIds" in storage else "(none)")
@@ -157,7 +150,7 @@ class Formatter:
 			self.out("Mount image:")
 			self.indent(1)
 			if "mountImage" in storage:
-				self._printImage(storage.mountImage)
+				self._printStorageImage(storage.mountImage)
 			else:
 				self.out("No image")
 			self.indent(-1)
@@ -166,22 +159,26 @@ class Formatter:
 		self.out("Load balancer ID: %s", id)
 	
 	def printLoadBalancer(self, loadBalancer):
-		self.out("Load balancer ID: %s", loadBalancer["loadBalancerId"])
-		self.out("Name: %s", loadBalancer["loadBalancerName"])
-		self.out("Provisioning state: %s", loadBalancer["provisioningState"])
-		self.out("Algorithm: %s", loadBalancer["loadBalancerAlgorithm"])
-		self.out("IP address: %s", loadBalancer["ip"])
-		self.out("LAN ID: %s", loadBalancer["lanId"])
-		self.out("Creation time [%s] modification time [%s]", loadBalancer["creationTime"], loadBalancer["lastModificationTime"])
+		if self.short:
+			self.out("Load balancer '%s' => %s is %s, balancing %s on LAN %s => %s", loadBalancer["loadBalancerName"], loadBalancer["loadBalancerId"], loadBalancer["provisioningState"], loadBalancer["loadBalancerAlgorithm"], loadBalancer["lanId"], loadBalancer["ip"])
+		else:
+			self.out("Load balancer ID: %s", loadBalancer["loadBalancerId"])
+			self.out("Name: '%s'", loadBalancer["loadBalancerName"])
+			self.out("Provisioning state: %s", loadBalancer["provisioningState"])
+			self.out("Algorithm: %s", loadBalancer["loadBalancerAlgorithm"])
+			self.out("IP address: %s", loadBalancer["ip"])
+			self.out("LAN ID: %s", loadBalancer["lanId"])
+			self.out("Creation time [%s] modification time [%s]", loadBalancer["creationTime"], loadBalancer["lastModificationTime"])
 		self.out("Balanced servers:")
 		self.indent(1)
 		if "balancedServers" in loadBalancer:
 			for srv in loadBalancer["balancedServers"]:
-				self.printBalancedServer(srv)
+				self._printBalancedServer(srv)
 		else:
 			self.out("(none)")
 		self.indent(-1)
-		self.out()
+		if not self.short:
+			self.out()
 		self.out("Firewall:")
 		self.indent(1)
 		if "firewall" in loadBalancer:
@@ -190,14 +187,14 @@ class Formatter:
 			self.out("(none)")
 		self.indent(-1)
 	
-	def printBalancedServer(self, srv):
+	def _printBalancedServer(self, srv):
 		# it may be "active" instead of "activate", but the documentation specifies it is "activate"
 		if self.short:
-			self.out("%s on server %s (%s) NIC %s", "Active" if srv["activate"] else "Inactive", srv["serverName"], srv["serverId"], srv["balancedNicId"])
+			self.out("%s on server '%s' (%s) NIC %s", "Active" if srv["activate"] else "Inactive", srv["serverName"], srv["serverId"], srv["balancedNicId"])
 		else:
 			self.out()
 			self.out("Server ID: %s", srv["serverId"])
-			self.out("Server name: %s", srv["serverName"])
+			self.out("Server name: '%s'", srv["serverName"])
 			self.out("NIC ID: %s", srv["balancedNicId"])
 			self.out("Active: %s", "yes" if srv["activate"] else "no")
 	
@@ -206,24 +203,24 @@ class Formatter:
 		self.out("LAN ID: %s", response["lanId"])
 		if "balancedServers" in response:
 			for srv in response["balancedServers"]:
-				self.printBalancedServer(srv)
+				self._printBalancedServer(srv)
 		else:
 			sel.out("ERROR")
 	
-	def _printImage(self, image): # this is used by printStorage()
+	def _printStorageImage(self, image): # this is used by printStorage()
 		if self.short:
-			self.out("Image %s: %s", image["imageId"], image["imageName"])
+			self.out("Image '%s' (%s)", image["imageName"], image["imageId"])
 		else:
 			self.out()
-			self.out("Name: %s", image["imageName"])
+			self.out("Name: '%s'", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
 	
 	def printImage(self, image): # used by all except printStorage()
 		if self.short:
-			self.out("Image %s in %s: %s", image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION", image["imageName"])
+			self.out("Image '%s' (%s) in %s", image["imageName"], image["imageId"], image["region"] if "region" in image else "UNKNOWN_REGION")
 		else:
 			self.out()
-			self.out("Name: %s", image["imageName"])
+			self.out("Name: '%s'", image["imageName"])
 			self.out("Image ID: %s", image["imageId"])
 			self.out("Region: %s", image["region"])
 			self.out("Type: %s", image["imageType"])
@@ -267,7 +264,7 @@ class Formatter:
 			self.indent(-1);
 		else:
 			self.out()
-			self.out("Name: %s", dc["dataCenterName"])
+			self.out("Name: '%s'", dc["dataCenterName"])
 			self.out("Provisioning state: %s", dc["provisioningState"])
 			self.out("Region: %s", dc["region"])
 			self.out("Version: %s", dc["dataCenterVersion"])

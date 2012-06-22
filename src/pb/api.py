@@ -27,7 +27,7 @@ class API:
 			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Unknown initialization error: %s" % str(err))
 	
 	# Calls the func() function using SOAP and the given arguments list (must always be an array)
-	def __call(self, func, args):
+	def _call(self, func, args):
 		if (self.debug):
 			print "# Calling %s %s" % (func, args)
 		try:
@@ -47,8 +47,8 @@ class API:
 			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Transport error: %s" % str(err))
 	
 	# Returns the userArgs hash, but replaces the keys with the values found in translation and only the ones found in translation
-	# eg, __parseArgs({"a": 10, "b": 20, "c": 30}, {"a": "a", "b": "B"}) => {"a": 10, "B": 20}
-	def __parseArgs(self, userArgs, translation):
+	# eg, _parseArgs({"a": 10, "b": 20, "c": 30}, {"a": "a", "b": "B"}) => {"a": 10, "B": 20}
+	def _parseArgs(self, userArgs, translation):
 		args = {}
 		for i in translation:
 			if i.lower() in userArgs:
@@ -56,165 +56,165 @@ class API:
 		return args
 	
 	def getAllDataCenters(self):
-		return self.__call("getAllDataCenters", [])
+		return self._call("getAllDataCenters", [])
 	
 	def getDataCenter(self, id):
-		return self.__call("getDataCenter", [id])
+		return self._call("getDataCenter", [id])
 	
 	def getServer(self, id):
-		return self.__call("getServer", [id])
+		return self._call("getServer", [id])
 	
 	def createDataCenter(self, name, region):
-		return self.__call("createDataCenter", [name, region.upper()])
+		return self._call("createDataCenter", [name, region.upper()])
 	
 	def getDataCenterState(self, id):
-		return self.__call("getDataCenterState", [id])
+		return self._call("getDataCenterState", [id])
 	
 	def updateDataCenter(self, userArgs):
-		args = self.__parseArgs(userArgs, {"dcid": "dataCenterId", "name": "dataCenterName"})
-		return self.__call("updateDataCenter", [args])
+		args = self._parseArgs(userArgs, {"dcid": "dataCenterId", "name": "dataCenterName"})
+		return self._call("updateDataCenter", [args])
 	
 	def clearDataCenter(self, id):
-		return self.__call("clearDataCenter", [id])
+		return self._call("clearDataCenter", [id])
 	
 	def deleteDataCenter(self, id):
-		return self.__call("deleteDataCenter", [id])
+		return self._call("deleteDataCenter", [id])
 	
 	def createServer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"cores": "cores", "ram": "ram", "bootFromStorageId": "bootFromStorageId", "bootFromImageId": "bootFromImageId", "lanId": "lanId", "dcid": "dataCenterId", "name": "serverName"})
+		args = self._parseArgs(userArgs, {"cores": "cores", "ram": "ram", "bootFromStorageId": "bootFromStorageId", "bootFromImageId": "bootFromImageId", "lanId": "lanId", "dcid": "dataCenterId", "name": "serverName"})
 		if "ostype" in userArgs:
 			args["osType"] = userArgs["ostype"].upper()
 		if "internetaccess" in userArgs:
 			args["internetAccess"] = (userArgs["internetaccess"][:1].lower() == "y")
 		if "zone" in userArgs:
 			args["availabilityZone"] = userArgs["zone"].upper()
-		return self.__call("createServer", [args])
+		return self._call("createServer", [args])
 	
 	def rebootServer(self, id):
-		return self.__call("rebootServer", [id])
+		return self._call("rebootServer", [id])
 	
 	def updateServer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"srvid": "serverId", "name": "serverName", "cores": "cores", "ram": "ram", "bootFromImageId": "bootFromImageId", "bootFromStorageId": "bootFromStorageId"})
+		args = self._parseArgs(userArgs, {"srvid": "serverId", "name": "serverName", "cores": "cores", "ram": "ram", "bootFromImageId": "bootFromImageId", "bootFromStorageId": "bootFromStorageId"})
 		if "ostype" in userArgs:
 			args["osType"] = userArgs["ostype"].upper()
 		if "zone" in userArgs:
 			args["availabilityZone"] = userArgs["zone"].upper()
-		return self.__call("updateServer", [args])
+		return self._call("updateServer", [args])
 	
 	def deleteServer(self, id):
-		return self.__call("deleteServer", [id])
+		return self._call("deleteServer", [id])
 	
 	def createStorage(self, userArgs):
-		args = self.__parseArgs(userArgs, {"dcid": "dataCenterId", "size": "size", "name": "storageName", "imgid": "mountImageId"})
-		return self.__call("createStorage", [args])
+		args = self._parseArgs(userArgs, {"dcid": "dataCenterId", "size": "size", "name": "storageName", "imgid": "mountImageId"})
+		return self._call("createStorage", [args])
 	
 	def getStorage(self, id):
-		return self.__call("getStorage", [id])
+		return self._call("getStorage", [id])
 	
 	def connectStorageToServer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"stoid": "storageId", "srvid": "serverId", "bus": "busType", "devnum": "deviceNumber"})
+		args = self._parseArgs(userArgs, {"stoid": "storageId", "srvid": "serverId", "bus": "busType", "devnum": "deviceNumber"})
 		args["busType"] = args["busType"].upper()
-		return self.__call("connectStorageToServer", [args])
+		return self._call("connectStorageToServer", [args])
 	
 	def disconnectStorageFromServer(self, stoId, srvId):
-		return self.__call("disconnectStorageFromServer", [stoId, srvId])
+		return self._call("disconnectStorageFromServer", [stoId, srvId])
 	
 	def updateStorage(self, userArgs):
-		args = self.__parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size", "imgid": "mountImageId"})
-		return self.__call("updateStorage", [args])
+		args = self._parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size", "imgid": "mountImageId"})
+		return self._call("updateStorage", [args])
 	
 	def deleteStorage(self, id):
-		return self.__call("deleteStorage", [id])
+		return self._call("deleteStorage", [id])
 	
 	def createLoadBalancer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"dcid": "dataCenterId", "name": "loadBalancerName", "ip": "ip", "lanid": "lanId"})
+		args = self._parseArgs(userArgs, {"dcid": "dataCenterId", "name": "loadBalancerName", "ip": "ip", "lanid": "lanId"})
 		if "algo" in userArgs:
 			args["loadBalancerAlgorithm"] = userArgs["algo"].upper()
 		if "srvid" in userArgs:
 			args["serverIds"] = userArgs["srvid"].split(",")
-		result = self.__call("createLoadBalancer", [args])
+		result = self._call("createLoadBalancer", [args])
 		return result.loadBalancerId
 	
 	def getLoadBalancer(self, id):
-		return self.__call("getLoadBalancer", [id])
+		return self._call("getLoadBalancer", [id])
 	
 	def updateLoadBalancer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"bid": "loadBalancerId", "name": "loadBalancerName", "ip": "ip"})
+		args = self._parseArgs(userArgs, {"bid": "loadBalancerId", "name": "loadBalancerName", "ip": "ip"})
 		if "algo" in userArgs:
 			args["loadBalancerAlgorithm"] = userArgs["algo"].upper()
-		return self.__call("updateLoadBalancer", [args])
+		return self._call("updateLoadBalancer", [args])
 	
 	def registerServersOnLoadBalancer(self, srvids, bid):
-		return self.__call("registerServersOnLoadBalancer", [srvids, bid])
+		return self._call("registerServersOnLoadBalancer", [srvids, bid])
 	
 	def deregisterServersOnLoadBalancer(self, srvids, bid):
-		return self.__call("deregisterServersOnLoadBalancer", [srvids, bid])
+		return self._call("deregisterServersOnLoadBalancer", [srvids, bid])
 	
 	def activateLoadBalancingOnServers(self, srvids, bid):
-		return self.__call("activateLoadBalancingOnServers", [srvids, bid])
+		return self._call("activateLoadBalancingOnServers", [srvids, bid])
 	
 	def deactivateLoadBalancingOnServers(self, srvids, bid):
-		return self.__call("deactivateLoadBalancingOnServers", [srvids, bid])
+		return self._call("deactivateLoadBalancingOnServers", [srvids, bid])
 	
 	def deleteLoadBalancer(self, id):
-		return self.__call("deleteLoadBalancer", [id])
+		return self._call("deleteLoadBalancer", [id])
 	
 	def addRomDriveToServer(self, userArgs):
-		args = self.__parseArgs(userArgs, {"imgid": "imageId", "srvid": "serverId", "devnum": "deviceNumber"})
-		return self.__call("addRomDriveToServer", [args])
+		args = self._parseArgs(userArgs, {"imgid": "imageId", "srvid": "serverId", "devnum": "deviceNumber"})
+		return self._call("addRomDriveToServer", [args])
 	
 	def removeRomDriveFromServer(self, id, srvid):
-		return self.__call("addRomDriveToServer", [id, srvid])
+		return self._call("addRomDriveToServer", [id, srvid])
 	
 	def setImageOsType(self, imgid, ostype):
-		return self.__call("setImageOsType", [imgid, ostype])
+		return self._call("setImageOsType", [imgid, ostype])
 	
 	def getImage(self, id):
-		return self.__call("getImage", [id])
+		return self._call("getImage", [id])
 	
 	def getAllImages(self):
-		return self.__call("getAllImages", [])
+		return self._call("getAllImages", [])
 	
 	def deleteImage(self, id):
-		return self.__call("deleteImage", [id])
+		return self._call("deleteImage", [id])
 	
 	def createNIC(self, userArgs):
-		args = self.__parseArgs(userArgs, {"srvid": "serverId", "lanid": "lanId", "name": "nicName", "ip": "ip"})
-		return self.__call("createNic", [args])
+		args = self._parseArgs(userArgs, {"srvid": "serverId", "lanid": "lanId", "name": "nicName", "ip": "ip"})
+		return self._call("createNic", [args])
 	
 	def getNIC(self, id):
-		return self.__call("getNic", [id])
+		return self._call("getNic", [id])
 	
 	def setInternetAccess(self, dcid, lanid, internetAccess):
-		return self.__call("setInternetAccess", [dcid, lanid, internetAccess])
+		return self._call("setInternetAccess", [dcid, lanid, internetAccess])
 	
 	def updateNIC(self, userArgs):
-		args = self.__parseArgs(userArgs, {"nicid": "nicId", "lanid": "lanId", "name": "nicName"})
+		args = self._parseArgs(userArgs, {"nicid": "nicId", "lanid": "lanId", "name": "nicName"})
 		if "ip" in userArgs:
 			args["ip"] = (userArgs["ip"] if userArgs["ip"].lower() != "reset" else "")
-		return self.__call("updateNic", [args])
+		return self._call("updateNic", [args])
 	
 	def deleteNIC(self, id):
-		return self.__call("deleteNic", [id])
+		return self._call("deleteNic", [id])
 	
 	def reservePublicIPBlock(self, size, region):
-		return self.__call("reservePublicIpBlock", [size, region.upper()])
+		return self._call("reservePublicIpBlock", [size, region.upper()])
 	
 	def addPublicIPToNIC(self, ip, nicId):
-		return self.__call("addPublicIpToNic", [ip, nicId])
+		return self._call("addPublicIpToNic", [ip, nicId])
 	
 	def getAllPublicIPBlocks(self):
-		result = self.__call("getAllPublicIpBlocks", [])
+		result = self._call("getAllPublicIpBlocks", [])
 		return result
 	
 	def removePublicIPFromNIC(self, ip, nicId):
-		return self.__call("removePublicIpFromNic", [ip, nicId])
+		return self._call("removePublicIpFromNic", [ip, nicId])
 	
 	def releasePublicIPBlock(self, id):
-		return self.__call("releasePublicIpBlock", [id])
+		return self._call("releasePublicIpBlock", [id])
 	
-	def __parseFirewallRule(self, userRule):
-		rule = self.__parseArgs(userRule, {"smac": "sourceMac", "sip": "sourceIp", "dip": "targetIp", "icmptype": "icmpType", "icmpcode": "icmpCode"})
+	def _parseFirewallRule(self, userRule):
+		rule = self._parseArgs(userRule, {"smac": "sourceMac", "sip": "sourceIp", "dip": "targetIp", "icmptype": "icmpType", "icmpcode": "icmpCode"})
 		if "proto" in userRule:
 			rule["protocol"] = userRule["proto"].upper()
 		if "port" in userRule:
@@ -224,11 +224,11 @@ class API:
 		return rule
 	
 	def addFirewallRuleToNic(self, id, userRule):
-		rule = self.__parseFirewallRule(userRule)
-		return self.__call("addFirewallRuleToNic", [id, [rule]])
+		rule = self._parseFirewallRule(userRule)
+		return self._call("addFirewallRuleToNic", [id, [rule]])
 	
 	def addFirewallRuleToLoadBalancer(self, id, userRule):
-		rule = self.__parseFirewallRule(userRule)
-		return self.__call("addFirewallRuleToLoadBalancer", [id, [rule]])
+		rule = self._parseFirewallRule(userRule)
+		return self._call("addFirewallRuleToLoadBalancer", [id, [rule]])
 	
 
