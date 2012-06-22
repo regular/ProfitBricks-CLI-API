@@ -176,7 +176,7 @@ class Shell:
 			self.out('')
 			return
 		
-		# add default datacenter at position 1 (so command stays first and all other arguments follow -dcid)
+		# add default data center at position 1 (so command stays first and all other arguments follow -dcid)
 		if self.default_dc is not None:
 			args.insert(1, '-dcid')
 			args.insert(2, self.default_dc)
@@ -223,7 +223,7 @@ class Shell:
 	def do_about(self):
 		self.out('')
 		self.out(self.tbold + 'ProfitBricks API CLI v' + self.version + ' Copyright 2012 ProfitBricks GmbH' + self.treset + ', licensed under Apache 2.0 ( http://www.apache.org/licenses/LICENSE-2.0 )')
-		self.out("Type 'exit' to leave, 'help' for help, 'list' to list available operations, 'use DatacenterId' to set a default working datacenter.")
+		self.out("Type 'exit' to leave, 'help' for help, 'list' to list available operations, 'use DatacenterId' to set a default working data center for the current CLI session.")
 
 	def do_help(self):
 		self.do_about()
