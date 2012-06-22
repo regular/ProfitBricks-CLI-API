@@ -13,6 +13,9 @@ class ArgsParser:
 		# operation argument names are converted to lower-case and have dashes removed (eg, "create-datacenter -nA-Me hello" => baseArgs["op"]="create-datacenter", opArgs["name"]="hello")
 		while i < len(argv):
 			arg = argv[i].strip(" \r\n\t")
+			if arg[0:1] == "#":
+				# rest of line is comment, stop parsing
+				break
 			if arg == "-" or arg == "":
 				i += 1
 				continue
