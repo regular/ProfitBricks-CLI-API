@@ -294,7 +294,7 @@ class Formatter:
 			self.indent(1);
 			if "loadBalancers" in dataCenter:
 				for loadBalancer in dataCenter.loadBalancers:
-					self.printServer(loadBalancer)
+					self.printLoadBalancer(loadBalancer)
 			else:
 				self.out("(none)")
 			self.indent(-1);
