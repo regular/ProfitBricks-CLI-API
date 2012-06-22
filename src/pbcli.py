@@ -58,7 +58,6 @@ class Shell:
 		pb.errorhandler.initializing += 1
 		temp_out = pb.formatter.Formatter.out
 		pb.formatter.Formatter.out = lambda *args: this.do_nothing()
-		self.parse("getAllDataCenters")
 		pb.formatter.Formatter.out = temp_out
 		pb.errorhandler.initializing -= 1
 
@@ -98,15 +97,13 @@ class Shell:
 		argsParser.readUserArgs(args)
 		requestedOp = argsParser.getRequestedOperation()
 		if requestedOp is None:
-			self.out('Invalid operation')
-			return
+			raise Exception('Invalid operation')
 		if requestedOp[0] == '@':
 			helper = pb.helper.Helper()
 			pb.argsparser.ArgsParser.operations[requestedOp]['api'](helper)
 			return
 		if not argsParser.isAuthenticated():
-			self.out('Authentication error: Missing authentication')
-			return
+			raise Exception('Authentication error: Missing authentication')
 		formatter = pb.formatter.Formatter()
 		if argsParser.baseArgs['s']:
 			formatter.shortFormat()
@@ -123,18 +120,15 @@ class Shell:
 			if ('servers' in apiResult and len(apiResult['servers']) > 0) or ('storages' in apiResult and len(apiResult['storages']) > 0) or ('loadBalancers' in apiResult and len(apiResult['loadBalancers']) > 0):
 				ans = raw_input('The data center is not empty! Do you want to continue? [y/N] ')
 				if ans[0:1].lower() != 'y':
+					self.out('Operation cancelled')
 					return
 		
-		try:
-			apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
-		except Exception as ex:
-			self.out(str(ex));
-			return
+		apiResult = pb.argsparser.ArgsParser.operations[requestedOp]['api'](api, argsParser.opArgs)
 		
 		try:
 			pb.argsparser.ArgsParser.operations[requestedOp]['out'](formatter, apiResult)
 		except Exception as ex:
-			self.out('ERROR: Internal error while printing response')
+			raise Exception('Internal error while printing response: ' + str(ex))
 			return
 		
 		self.waitOnce = argsParser.baseArgs["wait"] if ("wait" in argsParser.baseArgs and 'dcid' in argsParser.opArgs) else None
@@ -162,7 +156,10 @@ class Shell:
 		
 		# reload datacenters list
 		if cmd in ['createdatacenter', 'deletedatacenter']:
-			self.parse('get-all-datacenters')
+			try:
+				self.parse('get-all-datacenters')
+			except Exception as ex:
+				raise Exception('Failed to get list of data centers: ' + str(ex))
 
 	def clean_cmd(self, cmd):
 		return cmd.replace('-', '').replace('@', '').lower();
@@ -207,15 +204,21 @@ class Shell:
 		readline.parse_and_bind('tab: menu-complete')
 		readline.set_completer_delims(readline.get_completer_delims().replace('-', ''))
 		self.do_about()
+		try:
+			self.parse('get-all-data-centers')
+		except Exception as ex:
+			self.out('Failed to get list of data centers: ' + str(ex))
 		self.out('')
-		self.parse('get-all-datacenters')
 		while True:
 			try:
 				text = raw_input(self.prompt())
 			except:
 				self.out('')
 				self.do_exit()
-			self.parse(text)
+			try:
+				self.parse(text)
+			except Exception as ex:
+				self.out(str(ex))
 
 	def do_about(self):
 		self.out('')

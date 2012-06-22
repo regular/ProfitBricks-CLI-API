@@ -42,7 +42,7 @@ class API:
 				API.datacenters = result
 			return result
 		except suds.WebFault as (err):
-			raise Exception("Web error: %s" % str(err))
+			raise Exception(str(err))
 		except suds.transport.TransportError as (err):
 			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Transport error: %s" % str(err))
 	
