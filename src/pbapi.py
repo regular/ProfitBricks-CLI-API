@@ -62,9 +62,10 @@ try:
 	api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
 	apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
 	pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
-	if not argsParser.baseArgs["s"]:
+	if (not argsParser.baseArgs["s"]) and (not formatter.batch):
 		print ""
 		print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
 except Exception as e:
 	print 'Error: %s' % str(e)
+	sys.exit(3) # soap fault
 
