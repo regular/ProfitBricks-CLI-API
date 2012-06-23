@@ -4,7 +4,7 @@ import errorhandler
 class ArgsParser:
 	
 	def __init__(self):
-		self.baseArgs = {"s": False, "debug": False} # s = short output formatting
+		self.baseArgs = {"s": False, "batch": False, "debug": False} # s = short output formatting, batch = batch output
 		self.opArgs = {}
 	
 	def readUserArgs(self, argv):
@@ -54,6 +54,8 @@ class ArgsParser:
 				self.baseArgs["debug"] = True
 			elif arg.lower() == "-s":
 				self.baseArgs["s"] = True
+			elif arg.lower() == "-batch":
+				self.baseArgs["batch"] = True
 			elif arg.lower() == "-wait":
 				self.baseArgs["wait"] = True
 			elif arg.lower() == "-nowait":
@@ -83,7 +85,7 @@ class ArgsParser:
 			for requiredArg in ArgsParser.operations[op]["args"]:
 				if not requiredArg in self.opArgs:
 					errorhandler.ArgsError("operation '%s' requires these arguments: -%s" % (self.baseArgs["op"], " -".join(ArgsParser.operations[op]["args"])))
-					return op
+					return ''
 			return op
 		return None
 	

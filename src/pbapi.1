@@ -26,7 +26,7 @@
 .Op Fl u Ar username
 .Op Fl p Ar password | Fl p Ar -
 .Op Fl auth Ar authfile
-.Op Fl s
+.Op Fl s | Fl batch
 .Ar operation
 .Op Fl dcid Ar id | Fl srvid Ar id
 .Op ...
@@ -76,6 +76,14 @@ This is so the user doesn't have to keep providing authentication every time
 is used.
 .It Fl s
 Enable short output formatting (display less information).
+.It Fl batch
+Enable batch output formatting (displays only IDs when creating elements, useful for scripting). The following operations support batch output:
+.Ar create-data-center
+.Ar get-data-center-state
+.Ar create-server
+.Ar create-storage
+.Ar create-load-balancer .
+Batch output overrides short output.
 .El
 .\" OVERVIEW
 .Sh OVERVIEW

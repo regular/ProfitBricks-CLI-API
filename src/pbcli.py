@@ -71,15 +71,28 @@ class Shell:
 		this = self
 		
 		def inner_completer(text, state):
-			text = this.clean_cmd(text)
+			clean_text = this.clean_cmd(text)
 			matches = []
+			# local api commands (@list, etc)
 			for cmd in this.cmds_internal:
-				if this.clean_cmd(cmd).startswith(text):
-					matches.append(cmd)
+				if this.clean_cmd(cmd).startswith(clean_text):
+					matches.append(pb.helper.Helper.camelCaseToDash(cmd))
+			# pb api commands
 			for cmd in this.cmds_api:
-				if this.clean_cmd(cmd).startswith(text):
-					matches.append(cmd)
-			return pb.helper.Helper.camelCaseToDash(matches[state]) + ' ' if state < len(matches) else None
+				if this.clean_cmd(cmd).startswith(clean_text):
+					matches.append(pb.helper.Helper.camelCaseToDash(cmd))
+			# data center ids and server ids (if not first word in readline)
+			if text != readline.get_line_buffer():
+				for dc in pb.api.API.datacenters:
+					if this.clean_cmd(dc.dataCenterId).startswith(clean_text):
+						matches.append(dc.dataCenterId)
+			
+			if state >= len(matches):
+				return None
+			# quote spaces
+			if matches[state].find(' ') != -1:
+				matches[state] = "'" + matches[state] + "'"
+			return matches[state] + ' '
 		
 		return inner_completer
 
@@ -88,7 +101,7 @@ class Shell:
 			if self.default_dc is not None:
 				self.out('Data center ' + self.default_dc + ' is in use. You may not perform any data center deletion operations. Type \'use\' to reset and try again\n')
 				return
-		args.insert(0, 'dummy') # equivalent of argv[0]
+		args.insert(0, 'pbapi-internal-placeholder-text') # equivalent of argv[0]
 		argsParser = pb.argsparser.ArgsParser()
 		pb.errorhandler.initializing += 1
 		argsParser.readUserArgs(sys.argv)
@@ -96,6 +109,10 @@ class Shell:
 		pb.errorhandler.initializing -= 1
 		argsParser.readUserArgs(args)
 		requestedOp = argsParser.getRequestedOperation()
+		if requestedOp == '':
+			# argsParser is telling us to ignore this command
+			# this hack will be removed once we replace errorhandler with exceptions
+			return
 		if requestedOp is None:
 			raise Exception('Invalid operation')
 		if requestedOp[0] == '@':
@@ -107,6 +124,7 @@ class Shell:
 		formatter = pb.formatter.Formatter()
 		if argsParser.baseArgs['s']:
 			formatter.shortFormat()
+		formatter.batch = argsParser.baseArgs["batch"]
 		
 		try:
 			api = pb.api.API(argsParser.baseArgs['u'], argsParser.baseArgs['p'], debug = argsParser.baseArgs['debug'])
@@ -202,7 +220,7 @@ class Shell:
 	def start(self):
 		readline.set_completer(self.completer())
 		readline.parse_and_bind('tab: menu-complete')
-		readline.set_completer_delims(readline.get_completer_delims().replace('-', ''))
+		readline.set_completer_delims(readline.get_completer_delims().replace('-', '')) # don't use '-' as separator
 		self.do_about()
 		try:
 			self.parse('get-all-data-centers')

@@ -56,6 +56,7 @@ if not argsParser.isAuthenticated():
 formatter = pb.formatter.Formatter()
 if argsParser.baseArgs["s"]:
 	formatter.shortFormat()
+formatter.batch = argsParser.baseArgs["batch"]
 
 try:
 	api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])

@@ -2,6 +2,7 @@ class Formatter:
 	
 	indentValue = 0
 	short = False
+	batch = False
 	
 	def __init__(self):
 		self.longFormat()
@@ -61,16 +62,28 @@ class Formatter:
 	printUpdateLoadBalancer = operationQueued
 	
 	def printCreateDataCenter(self, response):
+		if self.batch:
+			self.out(response["dataCenterId"])
+			return
 		self.out("Data center ID: %s", response["dataCenterId"])
 		self.out("Data center region: %s", response["region"])
 	
 	def printCreateServer(self, response):
-		self.out("Server ID: %s", response["serverId"])
+		if self.batch:
+			self.out(response["serverId"])
+			return
+		self.out("Virtual server ID: %s", response["serverId"])
 	
 	def printCreateStorage(self, response):
+		if self.batch:
+			self.out(response["storageId"])
+			return
 		self.out("Virtual storage ID: %s", response["storageId"])
 	
 	def printDataCenterState(self, response):
+		if self.batch:
+			self.out(response)
+			return
 		self.out("Provisioning state: %s", response)
 	
 	def printAllDataCenters(self, dataCenters):
@@ -156,6 +169,9 @@ class Formatter:
 			self.indent(-1)
 	
 	def printCreateLoadBalancer(self, id):
+		if self.batch:
+			self.out(id)
+			return
 		self.out("Load balancer ID: %s", id)
 	
 	def printLoadBalancer(self, loadBalancer):
