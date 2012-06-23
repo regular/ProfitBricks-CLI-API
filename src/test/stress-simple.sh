@@ -1,5 +1,7 @@
 #!/bin/bash
 
+name='test-2'
+
 function api() {
 	echo "# $@" >&2
 	$(dirname $(readlink -f $0))/../pbapi.py $@ | grep -v 'Request ID'
@@ -10,20 +12,18 @@ function api_id() {
 }
 
 echo '-'
-dc=$(api_id create-data-center -name stress-test-simple)
+dc=$(api_id create-data-center -name ${name})
 echo DC: ${dc}
 echo '-'
 
-srv1=$(api_id create-server -name srv1 -dcid ${dc} -cores 1 -ram 256)
+srv1=$(api_id create-server -name srv1 -dcid ${dc} -cores 1 -ram 256 -lanid 99 -internetaccess y)
 echo "SRV 1: ${srv1}"
-api create-nic -srvid ${srv1} -lanid 99 -name srv1-nic1 -internetaccess y
 api create-nic -srvid ${srv1} -lanid 1 -name srv1-nic2
 api create-nic -srvid ${srv1} -lanid 2 -name srv1-nic3
 api create-nic -srvid ${srv1} -lanid 5 -name srv1-nic4
 
-srv2=$(api_id create-server -name srv2 -dcid ${dc} -cores 1 -ram 256)
+srv2=$(api_id create-server -name srv2 -dcid ${dc} -cores 1 -ram 256 -lanid 99)
 echo "SRV 2: ${srv2}"
-api create-nic -srvid ${srv2} -lanid 99 -name srv2-nic1
 api create-nic -srvid ${srv2} -lanid 1 -name srv2-nic2
 api create-nic -srvid ${srv2} -lanid 2 -name srv2-nic3
 api create-nic -srvid ${srv2} -lanid 5 -name srv2-nic4
@@ -71,4 +71,10 @@ api connect-storage-to-server -stoid ${stoid} -srvid ${srv4} -bus ide
 stoid=$(api_id create-storage -size 1 -name srv5-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
 api connect-storage-to-server -stoid ${stoid} -srvid ${srv5} -bus ide
+
+while [ 1 ]; do
+	( api get-datacenter-state -dcid ${dc} | grep 'AVAILABLE' ) && break
+	sleep 1
+	echo '.'
+done
 
