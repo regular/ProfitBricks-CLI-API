@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name='test-2'
+name='test-3'
 
 function api() {
 	echo "# $@" >&2
