@@ -10,8 +10,6 @@ pbapi.py - executes API commands on the ProfitBricks servers using the pb module
 
 pbcli.py - same as pbapi.py, but has its own console; suitable for human interaction, useless for scripting
 
-pbquery.py - may be missing, under development, will provide a way to customize the API output format (eg, ./pbquery.py ... -f 'the server %server.name is %server.status')
-
 update.sh - update script that tries to use git (if exists) to update the application before every run
 
 
