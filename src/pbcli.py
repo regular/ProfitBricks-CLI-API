@@ -72,14 +72,15 @@ class Shell:
 		
 		def inner_completer(text, state):
 			clean_text = this.clean_cmd(text)
-			if clean_text == '':
+			is_first_word = text == readline.get_line_buffer()
+			if clean_text == '' and is_first_word:
 				print ''
 				this.do_about()
 				sys.stdout.write(this.prompt() + readline.get_line_buffer())
 				return None
 			matches = []
 			
-			if text == readline.get_line_buffer():
+			if is_first_word:
 				# if first word on readline, internal commands and api commands
 				for cmd in this.cmds_internal:
 					if this.clean_cmd(cmd).startswith(clean_text):
@@ -92,6 +93,8 @@ class Shell:
 				for dc in pb.api.API.datacenters:
 					if this.clean_cmd(dc.dataCenterId).startswith(clean_text):
 						matches.append(dc.dataCenterId)
+			
+			matches.sort()
 			
 			# no matches?
 			if state >= len(matches):
@@ -126,7 +129,7 @@ class Shell:
 			# if more than one match, and first Tab autocomplete request, print possibilities and the prompt again
 			if (len(matches) > 1) and (state == 0):
 				print ''
-				for m in sorted(matches):
+				for m in matches:
 					print m
 				sys.stdout.write(this.prompt() + readline.get_line_buffer())
 			
