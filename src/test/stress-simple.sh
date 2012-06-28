@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name='test-3'
+name='stress-simple'
 
 function api() {
 	echo "# $@" >&2
@@ -46,31 +46,31 @@ api create-nic -srvid ${srv5} -lanid 4 -name srv5-nic2
 
 stoid=$(api_id create-storage -size 1 -name srv1-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv1} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv1}
 
 stoid=$(api_id create-storage -size 1 -name srv2-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv2} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv2}
 
 stoid=$(api_id create-storage -size 1 -name srv3-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv3} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv3}
 
 stoid=$(api_id create-storage -size 1 -name srv4-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv4} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv4}
 
 stoid=$(api_id create-storage -size 1 -name srv4-sto2 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv4} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv4}
 
 stoid=$(api_id create-storage -size 1 -name srv4-sto3 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv4} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv4}
 
 stoid=$(api_id create-storage -size 1 -name srv5-sto1 -dcid ${dc})
 echo "STO: ${stoid}"
-api connect-storage-to-server -stoid ${stoid} -srvid ${srv5} -bus ide
+api connect-storage-to-server -stoid ${stoid} -srvid ${srv5}
 
 while [ 1 ]; do
 	( api get-datacenter-state -dcid ${dc} | grep 'AVAILABLE' ) && break

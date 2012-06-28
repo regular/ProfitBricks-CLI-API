@@ -313,8 +313,8 @@ Connects the virtual storage to an existing server.
 .Bl -tag -width Ds
 .It Fl srvid Ar serverId
 The ID of the target virtual server.
-.It Fl bus Ar busType
-Bus type to which the storage will be connected (IDE, SCSI or VIRTIO)
+.It Op Fl bus Ar busType
+Bus type to which the storage will be connected (IDE, SCSI or VIRTIO, default VIRTIO)
 .It Op Fl devnum Ar deviceNumber
 Defines the device number of the virtual storage. If no device number is set, a device number will be automatically assigned.
 .El

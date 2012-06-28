@@ -112,8 +112,8 @@ class API:
 		return self._call("getStorage", [id])
 	
 	def connectStorageToServer(self, userArgs):
-		args = self._parseArgs(userArgs, {"stoid": "storageId", "srvid": "serverId", "bus": "busType", "devnum": "deviceNumber"})
-		args["busType"] = args["busType"].upper()
+		args = self._parseArgs(userArgs, {"stoid": "storageId", "srvid": "serverId", "devnum": "deviceNumber"})
+		args["busType"] = (args["bus"] if "bus" in userArgs else "VIRTIO").upper()
 		return self._call("connectStorageToServer", [args])
 	
 	def disconnectStorageFromServer(self, stoId, srvId):
