@@ -40,8 +40,8 @@ your password.
 4. QUICK INTRO
 ==============
 
-Use the pbcli.py application for a better interface. Type 'help' to get help (it
-will load the pbapi.1 man page) or 'list' to get see the available commands. The
+The pbcli application provides a friendly console. Use 'help' to get the manpage
+(it loads the pbapi.1 man page) or 'list' to get see the available commands. The
 pbcli interface supports tab completion, has basic history and allows you to set
 a default working datacenter and wait after all provisioning operations until it
 becomes available again.
