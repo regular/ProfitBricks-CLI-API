@@ -174,7 +174,7 @@ class ArgsParser:
 				"out": lambda formatter, result: formatter.printStorage(result)
 			},
 			"connectStorageToServer": {
-				"args": ["stoid", "srvid", "bus"],
+				"args": ["stoid", "srvid"],
 				"api": lambda api, opArgs: api.connectStorageToServer(opArgs),
 				"out": lambda formatter, result: formatter.printConnectStorageToServer(result)
 			},
