@@ -21,7 +21,9 @@ class ArgsParser:
 				continue
 			# no dash = operation
 			if arg[0] != "-":
-				if not "op" in self.baseArgs:
+				if "op" in self.baseArgs:
+					errorhandler.ArgsError("Ambiguous argument '" + arg[0] + "'")
+				else:
 					self.baseArgs["op"] = argv[i]
 				i += 1
 				continue
