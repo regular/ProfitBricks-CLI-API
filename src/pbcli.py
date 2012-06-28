@@ -71,28 +71,71 @@ class Shell:
 		this = self
 		
 		def inner_completer(text, state):
+			if state > 0:
+				return None
+			
 			clean_text = this.clean_cmd(text)
+			if clean_text == '':
+				print ''
+				this.do_about()
+				sys.stdout.write(this.prompt() + readline.get_line_buffer())
+				return None
 			matches = []
-			# local api commands (@list, etc)
-			for cmd in this.cmds_internal:
-				if this.clean_cmd(cmd).startswith(clean_text):
-					matches.append(pb.helper.Helper.camelCaseToDash(cmd))
-			# pb api commands
-			for cmd in this.cmds_api:
-				if this.clean_cmd(cmd).startswith(clean_text):
-					matches.append(pb.helper.Helper.camelCaseToDash(cmd))
-			# data center ids and server ids (if not first word in readline)
-			if text != readline.get_line_buffer():
+			
+			if text == readline.get_line_buffer():
+				# if first word on readline, internal commands and api commands
+				for cmd in this.cmds_internal:
+					if this.clean_cmd(cmd).startswith(clean_text):
+						matches.append('@' + pb.helper.Helper.camelCaseToDash(cmd))
+				for cmd in this.cmds_api:
+					if this.clean_cmd(cmd).startswith(clean_text):
+						matches.append(pb.helper.Helper.camelCaseToDash(cmd))
+			else:
+				# if not first word in readline, data center ids and server ids
 				for dc in pb.api.API.datacenters:
 					if this.clean_cmd(dc.dataCenterId).startswith(clean_text):
 						matches.append(dc.dataCenterId)
 			
-			if state >= len(matches):
+			# no matches?
+			if len(matches) == 0:
 				return None
-			# quote spaces
-			if matches[state].find(' ') != -1:
-				matches[state] = "'" + matches[state] + "'"
-			return matches[state] + ' '
+			
+			# cut to longest common beginning
+			common = matches[0].replace('@', '')
+			for m in matches:
+				if m[0 : 1] == '@':
+					m = m[1 : ]
+					j = 1
+				else:
+					j = 0
+				internal_pos_adjust = j
+				while j < len(common):
+					if j >= len(m):
+						common = common[0 : j - 1 + internal_pos_adjust]
+						break
+					if m[j] != common[j]:
+						common = common[0 : j + internal_pos_adjust]
+						break
+					j += 1
+			
+			# if there are no matches, avoid printing all autocomplete possibilities
+			if common == '':
+				return None
+			
+			# quote if we have spaces
+			if common.find(' ') != -1:
+				common = "'" + common + "'"
+			
+			# if more than one match, print possibilities and the prompt again
+			if len(matches) > 1:
+				print ''
+				for m in matches:
+					print m
+				sys.stdout.write(this.prompt() + readline.get_line_buffer())
+				return common
+			
+			# we had exactly one match, return it along with a trailing whitespace
+			return common + ' '
 		
 		return inner_completer
 
