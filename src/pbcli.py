@@ -71,9 +71,6 @@ class Shell:
 		this = self
 		
 		def inner_completer(text, state):
-			if state > 0:
-				return None
-			
 			clean_text = this.clean_cmd(text)
 			if clean_text == '':
 				print ''
@@ -97,7 +94,7 @@ class Shell:
 						matches.append(dc.dataCenterId)
 			
 			# no matches?
-			if len(matches) == 0:
+			if state >= len(matches):
 				return None
 			
 			# cut to longest common beginning
@@ -126,16 +123,15 @@ class Shell:
 			if common.find(' ') != -1:
 				common = "'" + common + "'"
 			
-			# if more than one match, print possibilities and the prompt again
-			if len(matches) > 1:
+			# if more than one match, and first Tab autocomplete request, print possibilities and the prompt again
+			if (len(matches) > 1) and (state == 0):
 				print ''
-				for m in matches:
+				for m in sorted(matches):
 					print m
 				sys.stdout.write(this.prompt() + readline.get_line_buffer())
-				return common
 			
 			# we had exactly one match, return it along with a trailing whitespace
-			return common + ' '
+			return (common + ' ' if len(matches) == 1 else matches[state] + ' ')
 		
 		return inner_completer
 
