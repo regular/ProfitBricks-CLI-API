@@ -87,6 +87,10 @@ class Formatter:
 		self.out("Provisioning state: %s", response)
 	
 	def printAllDataCenters(self, dataCenters):
+		if self.batch:
+			for dataCenter in dataCenters:
+				self.out(dataCenter["dataCenterId"])
+			return
 		if not self.short:
 			self.out()
 		self.out("%s %s %s %s", "Nr".ljust(3),  "Name".ljust(35), "Data Center ID".ljust(36), "Ver".ljust(4))
