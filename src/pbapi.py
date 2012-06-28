@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-# v1.2.1 Copyright 2012 ProfitBricks GmbH
+# v1.2.2 Copyright 2012 ProfitBricks GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
