@@ -120,7 +120,7 @@ class API:
 		return self._call("disconnectStorageFromServer", [stoId, srvId])
 	
 	def updateStorage(self, userArgs):
-		args = self._parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size", "imgid": "mountImageId"})
+		args = self._parseArgs(userArgs, {"stoid": "storageId", "name": "storageName", "size": "size"})
 		return self._call("updateStorage", [args])
 	
 	def deleteStorage(self, id):

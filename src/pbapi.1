@@ -96,7 +96,7 @@ Batch output overrides short output.
 .It NICs: create-nic get-nic set-internet-access update-nic delete-nic
 .It IPs: reserve-public-ip-block add-public-ip-to-nic get-all-public-ip-blocks remove-public-ip-from-nic release-public-ip-block
 .It Load balancers: create-load-balancer get-load-balancer update-load-balancer register-servers-on-load-balancer deregister-servers-on-load-balancer activate-load-balancing-on-servers deactivate-load-balancing-on-servers delete-load-balancer
-.\" .It Firewalls: add-firewall-rules-to-nic add-firewall-rules-to-load-balancer get-firewall activate-firewalls deactivate-firewalls remove-firewall-rules delete-firewalls
+.\" .It Firewalls: add-firewall-rules-to-nic get-firewall activate-firewalls deactivate-firewalls remove-firewall-rules delete-firewalls
 .El
 .\" DATACENTER OPERATIONS AND ARGUMENTS
 .Sh DATACENTER OPERATIONS AND ARGUMENTS
@@ -331,8 +331,6 @@ Updates parameters of an existing virtual storage device.
 Renames the virtual storage.
 .It Op Fl size Ar GiB
 Updates the size of the virtual storage (in gigabytes).
-.It Op Fl imgId Ar imageId
-Assigns or reassigns an image to the storage.
 .El
 .It Ar delete-storage
 Deletes an existing virtual storage device.
