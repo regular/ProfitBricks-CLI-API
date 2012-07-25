@@ -225,10 +225,17 @@ class API:
 	
 	def addFirewallRuleToNic(self, id, userRule):
 		rule = self._parseFirewallRule(userRule)
-		return self._call("addFirewallRuleToNic", [id, [rule]])
-	
+		return self._call("addFirewallRulesToNic", [[rule], id])
+
 	def addFirewallRuleToLoadBalancer(self, id, userRule):
 		rule = self._parseFirewallRule(userRule)
-		return self._call("addFirewallRuleToLoadBalancer", [id, [rule]])
-	
+		return self._call("addFirewallRulesToLoadBalancer", [[rule], id])
 
+	def activateFirewall(self, id):
+		return self._call("activateFirewalls", [id])
+
+	def deactivateFirewall(self, id):
+		return self._call("deactivateFirewalls", [id])
+
+	def deleteFirewall(self, id):
+		return self._call("deleteFirewalls", [id])
