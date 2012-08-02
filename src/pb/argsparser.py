@@ -321,15 +321,15 @@ class ArgsParser:
 				"out": lambda formatter, result: formatter.printReleasePublicIPBlock(result)
 			},
 			"addFirewallRuleToNic": {
-				"args": ["nicId"],
+				"args": ["nicid"],
 				"api": lambda api, opArgs: api.addFirewallRuleToNic(opArgs["nicid"], opArgs),
 				"out": lambda formatter, result: formatter.printAddFirewallRule(result)
 			},
-			"addFirewallRuleToLoadBalancer": {
-				"args": ["bid"],
-				"api": lambda api, opArgs: api.addFirewallRuleToLoadBalancer(opArgs["bid"], opArgs),
-				"out": lambda formatter, result: formatter.printAddFirewallRule(result)
-			},
+			#"addFirewallRuleToLoadBalancer": {
+			#	"args": ["bid"],
+			#	"api": lambda api, opArgs: api.addFirewallRuleToLoadBalancer(opArgs["bid"], opArgs),
+			#	"out": lambda formatter, result: formatter.printAddFirewallRule(result)
+			#},
 			"@list": {
 				"args": [],
 				"api": lambda helper: helper.printOperations(ArgsParser.operations)

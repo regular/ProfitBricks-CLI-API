@@ -6,7 +6,7 @@ from suds.transport.http import HttpAuthenticated
 from suds.transport import Request
 
 class API:
-	
+
 	url = "https://api.profitbricks.com/1.2/wsdl"
 	debug = False
 	requestId = None
@@ -227,6 +227,7 @@ class API:
 		rule = self._parseFirewallRule(userRule)
 		return self._call("addFirewallRulesToNic", [[rule], id])
 
+	# provisioning not supported this function at the moment
 	def addFirewallRuleToLoadBalancer(self, id, userRule):
 		rule = self._parseFirewallRule(userRule)
 		return self._call("addFirewallRulesToLoadBalancer", [[rule], id])
