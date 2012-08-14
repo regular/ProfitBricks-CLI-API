@@ -204,9 +204,9 @@ class Formatter:
 			self.out("Name: '%s'", loadBalancer["loadBalancerName"])
 			self.out("Provisioning state: %s", loadBalancer["provisioningState"])
 			self.out("Algorithm: %s", loadBalancer["loadBalancerAlgorithm"])
-			self.out("IP address: %s", loadBalancer["ip"])
+			self.out("IP address: %s", loadBalancer["ip"] if "ip" in loadBalancer else "(none)")
 			self.out("LAN ID: %s", loadBalancer["lanId"])
-			self.out("Creation time [%s] modification time [%s]", loadBalancer["creationTime"], loadBalancer["lastModificationTime"])
+			self.out("Creation time [%s] modification time [%s]", loadBalancer["creationTime"] if "creationTime" in loadBalancer else "(None)", loadBalancer["lastModificationTime"] if "lastModificationTime" in loadBalancer else "(None)")
 		self.out("Balanced servers:")
 		self.indent(1)
 		if "balancedServers" in loadBalancer:
