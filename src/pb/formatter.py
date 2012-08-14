@@ -143,6 +143,16 @@ class Formatter:
 				for nic in server.nics:
 					self.printNIC(nic);
 				self.indent(-1)
+			if "connectedStorages" in server:
+				self.out()
+				self.indent(1)
+				for sto in server.connectedStorages:
+					self.printConnectedStorage(sto)
+				if "romDrives" in server:
+					for rom in server.romDrives:
+						self.printAddedRomDrive(rom)
+				self.indent(-1)
+
 	
 	def printStorage(self, storage):
 		st = self.requireArgs(storage, ["storageName", "storageId", "provisioningState", "size", "osType"])
@@ -171,6 +181,14 @@ class Formatter:
 			else:
 				self.out("No image")
 			self.indent(-1)
+
+	def printConnectedStorage(self, storage):
+		st = self.requireArgs(storage, ["storageName", "storageId", "deviceNumber", "busType"])
+		self.out("Connected to Storage '%s' => %s on dev %s/%s", st["storageName"], st["storageId"], st["deviceNumber"], st["busType"])
+
+	def printAddedRomDrive(self, rom):
+		st = self.requireArgs(rom, ["imageName", "imageId"])
+		self.out("Connected to Rom drive '%s' => %s", st["imageName"], st["imageId"])	
 	
 	def printCreateLoadBalancer(self, id):
 		if self.batch:
