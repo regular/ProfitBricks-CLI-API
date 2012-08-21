@@ -185,10 +185,14 @@ class Formatter:
 	def printConnectedStorage(self, storage):
 		st = self.requireArgs(storage, ["storageName", "storageId", "deviceNumber", "busType"])
 		self.out("Connected to Storage '%s' => %s on dev %s/%s", st["storageName"], st["storageId"], st["deviceNumber"], st["busType"])
+		if "bootDevice" in storage:
+			self.out("Boot Device: TRUE")
 
 	def printAddedRomDrive(self, rom):
 		st = self.requireArgs(rom, ["imageName", "imageId"])
 		self.out("Connected to Rom drive '%s' => %s", st["imageName"], st["imageId"])	
+		if "bootDevice" in rom:
+			self.out("Boot Device: TRUE")
 	
 	def printCreateLoadBalancer(self, id):
 		if self.batch:
