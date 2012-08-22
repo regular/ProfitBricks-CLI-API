@@ -13,15 +13,25 @@ import logging
 import sudspatch
 from suds.transport.http import HttpAuthenticated
 from suds.transport import Request
+from suds.xsd.doctor import Import, ImportDoctor
+from suds.cache import ObjectCache
 
 class ClientProxy:
-
+	
 	url = "https://api.profitbricks.com/1.2/wsdl"
+	# url = "https://pbbde.profitbricks.localdomain/ProfitbricksApiService-1.2/ProfitbricksApiService?wsdl"
+	
 	debug = False
 	requestId = None
 	datacenters = []
 	
 	def __init__(self, username, password, debug = False):
+
+		# suds has schema cache by default, here you can set manually
+		oc = ObjectCache()
+		oc.setduration(days=1)
+		oc.setlocation("./cache")
+
 		self.debug = debug
 		if debug:
 			logging.getLogger("suds.server").setLevel(logging.DEBUG)
@@ -31,7 +41,7 @@ class ClientProxy:
 			logging.getLogger('suds.client').setLevel(logging.CRITICAL) # hide soap faults
 		
 		try:
-			self.client = suds.client.Client(url = self.url, username = username, password = password)
+			self.client = suds.client.Client(url = self.url, username = username, password = password, cache=oc)
 		except suds.transport.TransportError as (err):
 			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Unknown initialization error: %s" % str(err))
 	
@@ -47,8 +57,6 @@ class ClientProxy:
 					self.requestId = result["requestId"]
 				else:
 					self.requestId = "(no info)"
-			if func == "getAllDataCenters":
-				API.datacenters = result
 			return result
 		except suds.WebFault as (err):
 			raise Exception(str(err))
