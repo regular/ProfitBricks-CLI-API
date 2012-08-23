@@ -92,7 +92,7 @@ Batch output overrides short output.
 .It Servers: create-server get-server reboot-server update-server delete-server
 .It Storages: create-storage get-storage connect-storage-to-server disconnect-storage-from-server update-storage delete-storage
 .It CD/DVD-ROMs: add-rom-drive-to-server remove-rom-drive-from-server
-.It Images: set-omage-os-type get-image get-all-images delete-image
+.It Images: set-omage-os-type get-image get-all-images
 .It NICs: create-nic get-nic set-internet-access update-nic delete-nic
 .It IPs: reserve-public-ip-block add-public-ip-to-nic get-all-public-ip-blocks remove-public-ip-from-nic release-public-ip-block
 .It Load balancers: create-load-balancer get-load-balancer update-load-balancer register-servers-on-load-balancer deregister-servers-on-load-balancer activate-load-balancing-on-servers deactivate-load-balancing-on-servers delete-load-balancer
@@ -397,11 +397,6 @@ Identifier of the target image.
 .El
 .It Ar get-all-images
 Outputs a list of HDD and/or CD/DVD-ROM images existing on or uploaded to the ProfitBricks FTP server.
-.It Ar delete-image
-Deletes an existing HDD or CD/DVD-ROM (ISO) image.
-.Bl -tag -width Ds
-.It Fl imgid Ar imageId
-Identifier of the target CD/DVD-ROM image.
 .El
 .El
 .\" NIC OPERATIONS AND ARGUMENTS

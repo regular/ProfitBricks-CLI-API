@@ -260,11 +260,6 @@ class ArgsParser:
 				"api": lambda api, opArgs: api.getAllImages(),
 				"out": lambda formatter, result: formatter.printAllImages(result)
 			},
-			"deleteImage": {
-				"args": ["imgid"],
-				"api": lambda api, opArgs: api.deleteImage(opArgs["imgid"]),
-				"out": lambda formatter, result: formatter.printDeleteImage(result)
-			},
 			"createNIC": {
 				"args": ["srvid", "lanid"],
 				"api": lambda api, opArgs: api.createNIC(opArgs),
