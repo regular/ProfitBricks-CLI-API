@@ -253,7 +253,7 @@ class Formatter:
 			for srv in response["balancedServers"]:
 				self._printBalancedServer(srv)
 		else:
-			sel.out("ERROR")
+			self.out("ERROR")
 	
 	def _printStorageImage(self, image): # this is used by printStorage()
 		if self.short:
