@@ -242,7 +242,7 @@ class ArgsParser:
 			},
 			"removeRomDriveFromServer": {
 				"args": ["imgid", "srvid"],
-				"api": lambda api, opArgs: api.removeRomDriveFromServer(opArgs),
+				"api": lambda api, opArgs: api.removeRomDriveFromServer(opArgs["imgid"], opArgs["srvid"]),
 				"out": lambda formatter, result: formatter.printRemoveRomDriveFromServer(result)
 			},
 			"setImageOsType": {
