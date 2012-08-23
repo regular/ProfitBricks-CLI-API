@@ -41,7 +41,7 @@ class ClientProxy:
 			logging.getLogger('suds.client').setLevel(logging.CRITICAL) # hide soap faults
 		
 		try:
-			self.client = suds.client.Client(url = self.url, username = username, password = password, cache=oc)
+			self.client = suds.client.Client(url = self.url, username = username, password = password, cache=None)
 		except suds.transport.TransportError as (err):
 			raise Exception("Authentication error: Invalid username or password." if err.httpcode == 401 else "Unknown initialization error: %s" % str(err))
 	
@@ -475,6 +475,8 @@ class ClientProxy:
 		- `imageId`:
 		- `osType`: a string. WINDOWS, OTHER
 		"""
+		if not osType:
+			osType = osType.upper()
 		return self._call("setImageOsType", [imageId, osType])
 
 	def getImage(self, imageId):
