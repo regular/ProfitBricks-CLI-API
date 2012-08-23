@@ -148,9 +148,11 @@ class Formatter:
 				self.indent(1)
 				for sto in server.connectedStorages:
 					self.printConnectedStorage(sto)
-				if "romDrives" in server:
-					for rom in server.romDrives:
-						self.printAddedRomDrive(rom)
+			if "romDrives" in server:
+				self.out()
+				self.indent(1)
+				for rom in server.romDrives:
+					self.printAddedRomDrive(rom)
 				self.indent(-1)
 
 	
@@ -186,13 +188,13 @@ class Formatter:
 		st = self.requireArgs(storage, ["storageName", "storageId", "deviceNumber", "busType"])
 		self.out("Connected to Storage '%s' => %s on dev %s/%s", st["storageName"], st["storageId"], st["deviceNumber"], st["busType"])
 		if "bootDevice" in storage:
-			self.out("Boot Device: TRUE")
+			self.out("Boot Device: %s", storage["bootDevice"])
 
 	def printAddedRomDrive(self, rom):
 		st = self.requireArgs(rom, ["imageName", "imageId"])
 		self.out("Connected to Rom drive '%s' => %s", st["imageName"], st["imageId"])	
 		if "bootDevice" in rom:
-			self.out("Boot Device: TRUE")
+			self.out("Boot Device: %s", rom["bootDevice"])
 	
 	def printCreateLoadBalancer(self, id):
 		if self.batch:
