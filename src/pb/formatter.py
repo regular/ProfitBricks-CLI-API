@@ -148,6 +148,7 @@ class Formatter:
 				self.indent(1)
 				for sto in server.connectedStorages:
 					self.printConnectedStorage(sto)
+				self.indent(-1)
 			if "romDrives" in server:
 				self.out()
 				self.indent(1)
