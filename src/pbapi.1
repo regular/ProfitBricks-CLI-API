@@ -567,6 +567,61 @@ Identifiers of target servers, separated by commas (abcd-efgh-ijkl,0123-456-789,
 .El
 .It Ar delete-load-balancer
 .El
+.El
+.\" FIREWALL OPERATIONS
+.Sh FIREWALL OPERATIONS
+.El
+The
+.Ar operation
+may be:
+.Bl -tag -width Ds
+.It Ar add-firewall-rule-to-nic
+Adds accept-rules to the given NIC. If no firewall exists, a new inactive firewall is created.
+.Bl -tag -width Ds
+.It Fl nicid Ar nicId
+Identifier of target NIC
+.It Op Fl smac Ar sourceMac
+Only traffic originated from the respective MAC address is allowed. Valid format: aa:bb:cc:dd:ee:ff. Left empty to allow all source MAC address
+.It Op Fl sip Ar sourceIp
+In case the target NIC has multiple IP addresses, only traffic directed to the respective IP address of the NIC is allowed. Left empty to allow all target IPs
+.It Op Fl dip Ar targetIp
+Renames the virtual load balancer.
+.It Op Fl icmptype Ar icmpType
+Defines the allowed type (from 0 to 254) if protocol ICMP is chosen. Leave empty to allow all types
+.It Op Fl icmpcode Ar icmpCode
+Defines the allowed code (from 0 to 254) if protocol ICMP is chosen. Leave empty to allow all types
+.It Op Fl port Ar port
+Defines the start range of the allowed port. Valid format: 1-65534, if protocol TCP or UDP is chosen. Leave empty to allow all ports
+.El
+.It Ar get-firewall
+Displays information about a virtual firewall
+.Bl -tag -width Ds
+.It Fl fid Ar firewallId
+Identifier of the target firewall
+.El
+.It Ar remove-firewall-rule
+.Bl -tag -width Ds
+.It Fl rid Ar firewallRuleId
+Identifier of the target firewall rule
+.El
+.It Ar activate-firewall
+Activate an existing firewall
+.Bl -tag -width Ds
+.It Fl fid Ar firewallId
+Identifier of the target firewall
+.El
+.It Ar deactivate-firewall
+Deactivate an existing firewall
+.Bl -tag -width Ds
+.It Fl fid Ar firewallId
+Identifier of the target firewall
+.El
+.It Ar delete-firewall
+Delete an existing firewall
+.Bl -tag -width Ds
+.It Fl fid Ar firewallId
+Identifier of the target firewall
+.El
 .\" EXIT STATUS
 .Sh EXIT STATUS
 .Ex -std

@@ -320,6 +320,31 @@ class ArgsParser:
 				"api": lambda api, opArgs: api.addFirewallRuleToNic(opArgs["nicid"], opArgs),
 				"out": lambda formatter, result: formatter.printAddFirewallRule(result)
 			},
+			"removeFirewallRule": {
+				"args": ["rid"],
+				"api": lambda api, opArgs: api.removeFirewallRule(opArgs["rid"]),
+				"out": lambda formatter, result: formatter.printRemoveFirewallRule(result)
+			},			
+			"getFirewall": {
+				"args": ["fid"],
+				"api": lambda api, opArgs: api.getFirewall(opArgs["fid"]),
+				"out": lambda formatter, result: formatter.printFirewall(result)
+			},
+			"activateFirewall": {
+				"args": ["fid"],
+				"api": lambda api, opArgs: api.activateFirewall(opArgs["fid"]),
+				"out": lambda formatter, result: formatter.printActivateFirewall(result)
+			},
+			"deactivateFirewall": {
+				"args": ["fid"],
+				"api": lambda api, opArgs: api.deactivateFirewall(opArgs["fid"]),
+				"out": lambda formatter, result: formatter.printDeactivateFirewall(result)
+			},
+			"deleteFirewall": {
+				"args": ["fid"],
+				"api": lambda api, opArgs: api.deleteFirewall(opArgs["fid"]),
+				"out": lambda formatter, result: formatter.printDeleteFirewall(result)
+			},
 			#"addFirewallRuleToLoadBalancer": {
 			#	"args": ["bid"],
 			#	"api": lambda api, opArgs: api.addFirewallRuleToLoadBalancer(opArgs["bid"], opArgs),

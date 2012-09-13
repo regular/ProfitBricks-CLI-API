@@ -184,10 +184,16 @@ class API:
 		rule = self._parseFirewallRule(userRule)
 		return self.proxy.addFirewallRuleToNic(rule, id)
 
+	def removeFirewallRule(self, id):
+		return self.proxy.removeFirewallRule(id)
+
 	# provisioning not supported this function at the moment
 	def addFirewallRuleToLoadBalancer(self, id, userRule):
 		rule = self._parseFirewallRule(userRule)
 		return self.proxy.addFirewallRuleToLoadBalancer(rule, id)
+
+	def getFirewall(self, id):
+		return self.proxy.getFirewall(id)
 
 	def activateFirewall(self, id):
 		return self.proxy.activateFirewall(id)

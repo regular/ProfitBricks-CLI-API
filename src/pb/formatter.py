@@ -60,6 +60,10 @@ class Formatter:
 	printActivateLoadBalancingOnServers = operationQueued
 	printDeactivateLoadBalancingOnServers = operationQueued
 	printUpdateLoadBalancer = operationQueued
+	printRemoveFirewallRule = operationQueued
+	printActivateFirewall = operationQueued
+	printDeactivateFirewall = operationQueued
+	printDeleteFirewall = operationQueued
 	
 	def printCreateDataCenter(self, response):
 		if self.batch:
@@ -114,6 +118,11 @@ class Formatter:
 			self.out("Internet access: %s", "yes" if apiNIC["internetAccess"] else "no")
 			self.out("IP Addresses: %s", " ; ".join(apiNIC["ips"]) if "ips" in apiNIC else "(none)")
 			self.out("MAC Address: %s", nic["macAddress"])
+			if "firewall" in apiNIC:
+				self.out()
+				self.indent(1)
+				self.printFirewall(apiNIC["firewall"])
+				self.indent(-1)
 	
 	def printServer(self, server):
 		srv = self.requireArgs(server, ["serverName", "serverId", "creationTime", "lastModificationTime", "provisioningState", "virtualMachineState", "ram", "cores", "osType", "availabilityZone"])
@@ -143,14 +152,14 @@ class Formatter:
 				for nic in server.nics:
 					self.printNIC(nic);
 				self.indent(-1)
-			if "connectedStorages" in server:
+			if "connectedStorages" in server or "romDrives" in server:
 				self.out()
+			if "connectedStorages" in server:
 				self.indent(1)
 				for sto in server.connectedStorages:
 					self.printConnectedStorage(sto)
 				self.indent(-1)
 			if "romDrives" in server:
-				self.out()
 				self.indent(1)
 				for rom in server.romDrives:
 					self.printAddedRomDrive(rom)
@@ -231,10 +240,6 @@ class Formatter:
 		else:
 			self.out("(none)")
 		self.indent(-1)
-	
-	def printFirewall(self, firewall):
-		#self.out("== TO DO ==")
-		pass
 	
 	def _printBalancedServer(self, srv):
 		# it may be "active" instead of "activate", but the documentation specifies it is "activate"
@@ -365,10 +370,36 @@ class Formatter:
 		self.out("Firewall ID: %s", response.firewallId)
 		self.out("NIC ID: %s", response.nicId)
 		self.out("Provisioning state: %s", response.provisioningState)
-		self.out("The firewall is %s", "enabled" if response.active else "disabled")
+		self.out("The firewall is %s", "ENABLED" if response.active else "DISABLED")
 		self.out()
 		print response.firewallRules
 		self.out()
 		print response
 		self.out()
 
+	def printFirewall(self, fw):
+		self.out("Firewall ID: %s", fw.firewallId)
+		self.out("NIC ID: %s", fw.nicId)
+		self.out("Provisioning state: %s", fw.provisioningState)
+		self.out("The firewall is %s", "ENABLED" if fw.active else "DISABLED")
+		if "firewallRules" in fw:
+			self.indent(1);
+			for rule in fw.firewallRules:
+				self.out()
+				self.out("Firewall Rule ID: %s", rule.firewallRuleId)
+				if "protocol" in rule:
+					self.out("Protocol: %s", rule.protocol)
+				if "sourceMac" in rule:
+					self.out("Source Mac: %s", rule.sourceMac)
+				if "sourceIp" in rule:
+					self.out("Source IP: %s", rule.sourceIp)
+				if "targetIp" in rule:
+					self.out("Target IP: %s", rule.targetIp)
+				if "portRangeStart" in rule:
+					self.out("Port range from %s to %s", rule.portRangeStart, rule.portRangeEnd)
+				if "icmpType" in rule:
+					self.out("ICMP Type: %s", rule.icmpType)
+					self.out("ICMP Code: %s", rule.icmpCode)
+			self.indent(-1);
+		else:
+			self.out("The firewall has no rules specified")
