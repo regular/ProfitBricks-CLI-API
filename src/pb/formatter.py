@@ -26,7 +26,14 @@ class Formatter:
 	def requireArgs(soapResponse, requiredArgs, replaceMissingWith = "(none)"):
 		result = {}
 		for arg in requiredArgs:
-			result[arg] = str(soapResponse[arg]) if arg in soapResponse else replaceMissingWith
+			if arg in soapResponse:
+				# fix non ascii
+				if isinstance(soapResponse[arg], basestring):
+					result[arg] = soapResponse[arg].encode("UTF-8")
+				else:
+					result[arg] = str(soapResponse[arg])
+			else:
+				result[arg] = replaceMissingWith
 		return result
 	
 	# Generic method, for many operations that don't give any response (except through HTTP, which is handled by ProfitBricks.API)

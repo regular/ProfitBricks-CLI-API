@@ -68,7 +68,7 @@ class ArgsParser:
 				self.baseArgs["f"] = argv[i + 1]
 			# if not base arg, then it is operation arg
 			else:
-				self.opArgs[arg[1:].lower().replace("-", "")] = (argv[i + 1] if i < len(argv) - 1 else "")
+				self.opArgs[arg[1:].lower().replace("-", "")] = (argv[i + 1].decode("UTF-8") if i < len(argv) - 1 else "")
 				i += 1
 			i += 1
 		
