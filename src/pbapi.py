@@ -37,35 +37,35 @@ argsParser.readUserArgs(sys.argv)
 
 requestedOp = argsParser.getRequestedOperation()
 if requestedOp is None:
-     if argsParser.baseArgs["debug"]:
-          print sys.argv
-     pb.errorhandler.ArgsError("Unknown operation: " + argsParser.baseArgs["op"])
+    if argsParser.baseArgs["debug"]:
+        print sys.argv
+    pb.errorhandler.ArgsError("Unknown operation: " + argsParser.baseArgs["op"])
 
 # @ operations don't require pb api nor authentication
 
 if requestedOp[0] == "@":
-     helper = pb.helper.Helper()
-     pb.argsparser.ArgsParser.operations[requestedOp]["api"](helper)
-     sys.exit(0)
+    helper = pb.helper.Helper()
+    pb.argsparser.ArgsParser.operations[requestedOp]["api"](helper)
+    sys.exit(0)
 
 # perform regular (non-@) operation
 
 if not argsParser.isAuthenticated():
-     pb.errorhandler.ArgsError("Authentication error: Missing authentication")
+    pb.errorhandler.ArgsError("Authentication error: Missing authentication")
 
 formatter = pb.formatter.Formatter()
 if argsParser.baseArgs["s"]:
-     formatter.shortFormat()
+    formatter.shortFormat()
 formatter.batch = argsParser.baseArgs["batch"]
 
 try:
-     api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
-     apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
-     pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
-     if (not argsParser.baseArgs["s"]) and (not formatter.batch):
-          print ""
-          print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
+    api = pb.api.API(argsParser.baseArgs["u"], argsParser.baseArgs["p"], debug = argsParser.baseArgs["debug"])
+    apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
+    pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
+    if (not argsParser.baseArgs["s"]) and (not formatter.batch):
+        print ""
+        print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
 except Exception as e:
-     print 'Error: %s' % str(e)
-     sys.exit(3) # soap fault
+    print 'Error: %s' % str(e)
+    sys.exit(3) # soap fault
 
