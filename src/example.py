@@ -109,10 +109,10 @@ createStorageRequest = {'size': 1, 'dataCenterId': dcid, 'storageName': 'sto'}
 # find a test HDD image smaller than 1Gb
 images = proxy.getAllImages()
 for image in images:
-     if image['imageType'] == 'HDD' and image['imageSize'] < 1000 and image['region'] == 'EUROPE':
-          print 'Found a testing HDD image "%s"' % image['imageId']
-          createStorageRequest['mountImageId'] = image['imageId']
-          break
+    if image['imageType'] == 'HDD' and image['imageSize'] < 1000 and image['region'] == 'EUROPE':
+        print 'Found a testing HDD image "%s"' % image['imageId']
+        createStorageRequest['mountImageId'] = image['imageId']
+        break
 
 # now create storage
 sto_id = proxy.createStorage(createStorageRequest).storageId
@@ -128,18 +128,18 @@ print "waiting for provisioning to complete"
 wait = 0
 state = ''
 while(True):
-     wait +=1
-     print ".",
-     if wait == 50:
-          print "Provisioning timeout after 5 minutes"
-          break
-     state = proxy.getDataCenterState(dcid)
-     if state == 'AVAILABLE':
-          break
-     else:
-          time.sleep(6)
+    wait +=1
+    print ".",
+    if wait == 50:
+        print "Provisioning timeout after 5 minutes"
+        break
+    state = proxy.getDataCenterState(dcid)
+    if state == 'AVAILABLE':
+        break
+    else:
+        time.sleep(6)
 
 if(state == 'AVAILABLE'):
-     dc = proxy.getDataCenter(dcid)
-     formatter = pb.formatter.Formatter()
-     formatter.printDataCenter(dc)
+    dc = proxy.getDataCenter(dcid)
+    formatter = pb.formatter.Formatter()
+    formatter.printDataCenter(dc)
