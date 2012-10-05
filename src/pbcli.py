@@ -28,7 +28,6 @@ import pb.argsparser
 import pb.helper
 import pb.formatter
 import pb.errorhandler
-#import pb.spellcheck
 
 class Shell:
 
@@ -248,8 +247,6 @@ class Shell:
                 self.run_command(clean_cmd, args)
                 return
         
-        #spellcheck = pb.spellcheck.SpellCheck([i.lower() for i in self.cmds_api])
-        #match = spellcheck.one_match(cmd)
         match = None
         if match is None:
             self.out('Unknown command "%s"' % cmd)
