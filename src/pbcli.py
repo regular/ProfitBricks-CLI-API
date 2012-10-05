@@ -334,7 +334,7 @@ def restart_program(msg = None):
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
-def auth_update():
+def auto_update():
     print "Checking for updates (Ctrl+C to cancel): ",
     system=platform.system()
     if system == 'Linux':
@@ -353,7 +353,7 @@ def auth_update():
         print "Can only update on Linux systems (found: " + system + ")."
     return False
 
-if auth_update():
+if auto_update():
     restart_program('The API has been updated and the application will now restart.')
 
 shell = Shell()
