@@ -22,10 +22,19 @@ sudo easy_install suds
 2. PREREQUISITES FOR WINDOWS
 ============================
 
-First step, install setuptools from here: http://pypi.python.org/pypi/setuptools
-then open a cmd window and run C:\Python27\scripts\easy_install suds (replace 27
-with whatever version of python you have installed; this was tested to work with
-Python 2.7 on Windows 7 x64)
+First, iInstall Python-2.7.3 (must be 32-bit!) from:
+  http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
+Second, install setuptools-0.6c11 from:
+  http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
+and finally open a cmd window, change directory to C:\Python27\Scripts and run:
+  easy_install suds
+
+Only src/pbapi.py works in Windows due to limitations in the Windows Python.
+
+This worked on Windows XP SP3 32-bit and Windows 7 SP1 64-bit (but in both cases
+it was required to install Python 32-bit).
+
+Note: A .msi installer is on it's way and will be available in the next version.
 
 3. AUTHENTICATION SETUP
 =======================
