@@ -55,6 +55,5 @@ will update from the repository and will restart the pbcli.py application. There
 is no auto-update for pbapi.py, but you can always run update.sh yourself. To do
 an update on other platforms (Windows), simply do a git pull.
 
-Report bugs to bugs at profitbricks dot com
 Request support using support at profitbricks dot com
 
