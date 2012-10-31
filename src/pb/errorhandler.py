@@ -20,7 +20,7 @@ def exit(level = 0, message = None):
     #     2 = authentication error
     #     3 = soap fault
     if (not (message is None)) and (initializing == 0):
-        print message
+        print(message)
         if should_exit_python > 0:
             sys.exit(level)
     if last_error.last == 0:

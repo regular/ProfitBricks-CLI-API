@@ -73,7 +73,7 @@ class Shell:
             clean_text = this.clean_cmd(text)
             is_first_word = text == readline.get_line_buffer()
             if clean_text == '' and is_first_word:
-                print ''
+                print('')
                 this.do_about()
                 sys.stdout.write(this.prompt() + readline.get_line_buffer())
                 return None
@@ -127,9 +127,9 @@ class Shell:
             
             # if more than one match, and first Tab autocomplete request, print possibilities and the prompt again
             if (len(matches) > 1) and (state == 0):
-                print ''
+                print('')
                 for m in matches:
-                    print m
+                    print(m)
                 sys.stdout.write(this.prompt() + readline.get_line_buffer())
             
             # we had exactly one match, return it along with a trailing whitespace
@@ -305,7 +305,7 @@ class Shell:
                 found = True
         if not found:
             self.default_dc = None
-        print "Default datacenter:", (self.default_dc if self.default_dc is not None else "none")
+        print('Default datacenter:', (self.default_dc if self.default_dc is not None else 'none'))
         if self.default_dc is not None:
             self.parse('get-datacenter -s')
 
@@ -329,13 +329,13 @@ def restart_program(msg = None):
     # Note: this function does not return. Any cleanup action (like
     # saving data) must be done before calling this function.
     if msg is not None:
-        print msg
+        print(msg)
     sys.stdout.flush()
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
 def auto_update():
-    print "Checking for updates (Ctrl+C to cancel): ",
+    print('Checking for updates (Ctrl+C to cancel): ',)
     system=platform.system()
     if system == 'Linux':
         updater = os.path.dirname(__file__) + '/update.sh'
@@ -345,12 +345,12 @@ def auto_update():
             if exit_code == 1:
                 return True
             if exit_code == 2:
-                print "Update cancelled"
+                print('Update cancelled')
             return False
         else:
-            print "Updater not found, skpping."
+            print('Updater not found, skpping.')
     else:
-        print "Can only update on Linux systems (found: " + system + ")."
+        print('Can only update on Linux systems (found: ' + system + ').')
     return False
 
 if auto_update():

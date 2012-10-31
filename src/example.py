@@ -51,11 +51,11 @@ proxy = pb.client.ClientProxy(username, password, True)
 import random
 new_dc_name = 'DC_EXAMPLE_' + str(random.randrange(1000, 9999))
 
-print 'Creating new data center named "%s"' % new_dc_name
+print('Creating new data center named "%s"' % new_dc_name)
 dcid = proxy.createDataCenter(new_dc_name).dataCenterId
 
-print 'New data center ID is %s' % dcid
-print ''
+print('New data center ID is %s' % dcid)
+print('')
 
 # now create lbs1, lbs2 on a new lan 1. Lan 1 is implicitly created and public to internet
 createServerRequest = {'cores': 1, 'ram': 256, 'dataCenterId': dcid, 'lanId': 1, 'internetAccess': True}
@@ -63,44 +63,44 @@ createServerRequest = {'cores': 1, 'ram': 256, 'dataCenterId': dcid, 'lanId': 1,
 # create lbs1
 createServerRequest['serverName'] = 'lbs1'
 lbs1_id = proxy.createServer(createServerRequest).serverId
-print 'Server lbs1 is created on lan 1 with id "%s"' % lbs1_id
+print('Server lbs1 is created on lan 1 with id "%s"' % lbs1_id)
 
 # create lbs2
 createServerRequest['serverName'] = 'lbs2'
 lbs2_id = proxy.createServer(createServerRequest).serverId
-print 'Server lbs2 is created on lan 1 with id "%s"' % lbs2_id
+print('Server lbs2 is created on lan 1 with id "%s"' % lbs2_id)
 
 # create lb on lan 1, with balanced server lbs1
 createLbRequest = {'dataCenterId': dcid, 'loadBalancerName': 'lb', 'lanId': 1, 'serverIds': [lbs1_id]}
 lbid = proxy.createLoadBalancer(createLbRequest).loadBalancerId
-print 'Load balancer lb is created on lan 1 with balancer server lbs2 with id "%s"' % lbid
+print('Load balancer lb is created on lan 1 with balancer server lbs2 with id "%s"' % lbid)
 
 # you can also register server lbs2 with load balancer later
 proxy.registerServersOnLoadBalancer([lbs2_id], lbid)
-print 'Server lbs2 is registered with lb'
+print('Server lbs2 is registered with lb')
 
 # create server s2 on lan 1
 createServerRequest['serverName'] = 's2'
 # Lan 1 was already created before. You can connect to it but cannot set Lan to public or private. This setting is ignored
 createServerRequest['internetAccess'] = False
 s2_id = proxy.createServer(createServerRequest).serverId
-print 'Server s3 is created on lan 1 with id "%s"' % s2_id
+print('Server s3 is created on lan 1 with id "%s"' % s2_id)
 
 # create server s3 on new lan 2. Lan 2 is implicitly created
 createServerRequest['serverName'] = 's3'
 createServerRequest['lanId'] = 2
 s3_id = proxy.createServer(createServerRequest).serverId
-print 'Server s3 is created on lan 2 with id "%s"' % s3_id
+print('Server s3 is created on lan 2 with id "%s"' % s3_id)
 
 # create nic on s2 and connect to lan 2. Lan 2 is implicitly created
 createNicRequest = {'serverId': s2_id, 'lanId': 2}
 nic_s2_id = proxy.createNic(createNicRequest).nicId
-print 'A nic is created on s2, connect to Lan 2 with id "%s"' % nic_s2_id
+print('A nic is created on s2, connect to Lan 2 with id "%s"' % nic_s2_id)
 
 # feel free to turn a Lan to public or private
-print 'Turn Lan 2 public...'
+print('Turn Lan 2 public...')
 proxy.setInternetAccess(dcid, 2, True)
-print 'Turn Lan 2 private...'
+print('Turn Lan 2 private...')
 proxy.setInternetAccess(dcid, 2, False)
 
 # request storage sto, size 1GiB
@@ -110,28 +110,28 @@ createStorageRequest = {'size': 1, 'dataCenterId': dcid, 'storageName': 'sto'}
 images = proxy.getAllImages()
 for image in images:
     if image['imageType'] == 'HDD' and image['imageSize'] < 1000 and image['region'] == 'EUROPE':
-        print 'Found a testing HDD image "%s"' % image['imageId']
+        print('Found a testing HDD image "%s"' % image['imageId'])
         createStorageRequest['mountImageId'] = image['imageId']
         break
 
 # now create storage
 sto_id = proxy.createStorage(createStorageRequest).storageId
-print 'Storage created with id "%s"' % sto_id
+print('Storage created with id "%s"' % sto_id)
 
 # connect sto to s3
 connectStorageRequest = {'storageId': sto_id, 'serverId': s3_id}
 proxy.connectStorageToServer(connectStorageRequest)
-print 'Storage sto is connected to s3'
+print('Storage sto is connected to s3')
 
 # your requests are submited, now you can wait for provisioning to complete
-print "waiting for provisioning to complete"
+print("waiting for provisioning to complete")
 wait = 0
 state = ''
 while(True):
     wait +=1
-    print ".",
+    print(".",)
     if wait == 50:
-        print "Provisioning timeout after 5 minutes"
+        print("Provisioning timeout after 5 minutes")
         break
     state = proxy.getDataCenterState(dcid)
     if state == 'AVAILABLE':

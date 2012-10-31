@@ -38,7 +38,7 @@ argsParser.readUserArgs(sys.argv)
 requestedOp = argsParser.getRequestedOperation()
 if requestedOp is None:
     if argsParser.baseArgs["debug"]:
-        print sys.argv
+        print(sys.argv)
     pb.errorhandler.ArgsError("Unknown operation: " + argsParser.baseArgs["op"])
 
 # @ operations don't require pb api nor authentication
@@ -63,9 +63,9 @@ try:
     apiResult = pb.argsparser.ArgsParser.operations[requestedOp]["api"](api, argsParser.opArgs)
     pb.argsparser.ArgsParser.operations[requestedOp]["out"](formatter, apiResult)
     if (not argsParser.baseArgs["s"]) and (not formatter.batch):
-        print ""
-        print 'Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)")
+        print('')
+        print('Request ID: %s' % (str(api.requestId) if api.requestId is not None else "(none)"))
 except Exception as e:
-    print 'Error: %s' % str(e)
+    print('Error: %s' % str(e))
     sys.exit(3) # soap fault
 

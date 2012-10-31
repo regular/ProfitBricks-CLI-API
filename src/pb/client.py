@@ -18,8 +18,8 @@ from suds.cache import ObjectCache
 
 class ClientProxy:
     
-    url = "https://api.profitbricks.com/1.2/wsdl"
-    # url = "https://pbbde.profitbricks.localdomain/ProfitbricksApiService-1.2/ProfitbricksApiService?wsdl"
+    #url = "https://api.profitbricks.com/1.2/wsdl"
+    url = "https://pbbde.profitbricks.localdomain/ProfitbricksApiService-1.2/ProfitbricksApiService?wsdl"
     
     debug = False
     requestId = None
@@ -48,7 +48,7 @@ class ClientProxy:
     # Calls the func() function using SOAP and the given arguments list (must always be an array)
     def _call(self, func, args):
         if (self.debug):
-            print "# Calling %s %s" % (func, args)
+            print("# Calling %s %s" % (func, args))
         try:
             method = getattr(self.client.service, func)
             result = method(*args)

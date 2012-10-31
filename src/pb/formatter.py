@@ -20,7 +20,7 @@ class Formatter:
             self.indentValue += indentModification
     
     def out(self, outStr = "", *args):
-        print ("\t" * self.indentValue) + outStr % args
+        print(("\t" * self.indentValue) + outStr % args)
     
     @staticmethod
     def requireArgs(soapResponse, requiredArgs, replaceMissingWith = "(none)"):
@@ -379,9 +379,9 @@ class Formatter:
         self.out("Provisioning state: %s", response.provisioningState)
         self.out("The firewall is %s", "ENABLED" if response.active else "DISABLED")
         self.out()
-        print response.firewallRules
+        print(response.firewallRules)
         self.out()
-        print response
+        print(response)
         self.out()
 
     def printFirewall(self, fw):
