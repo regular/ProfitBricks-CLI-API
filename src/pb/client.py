@@ -18,8 +18,8 @@ from suds.cache import ObjectCache
 
 class ClientProxy:
     
-    #url = "https://api.profitbricks.com/1.2/wsdl"
-    url = "https://pbbde.profitbricks.localdomain/ProfitbricksApiService-1.2/ProfitbricksApiService?wsdl"
+    url = "https://api.profitbricks.com/1.2/wsdl"
+    #url = "https://pbbde.profitbricks.localdomain/ProfitbricksApiService-1.2/ProfitbricksApiService?wsdl"
     
     debug = False
     requestId = None
