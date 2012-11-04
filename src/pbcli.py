@@ -335,7 +335,7 @@ def restart_program(msg = None):
     os.execl(python, python, * sys.argv)
 
 def auto_update():
-    print('Checking for updates (Ctrl+C to cancel): ',)
+    print('Checking for updates (Ctrl+C to cancel): ')
     system=platform.system()
     if system == 'Linux':
         updater = os.path.dirname(__file__) + '/update.sh'
